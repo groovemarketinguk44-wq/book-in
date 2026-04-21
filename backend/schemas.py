@@ -30,6 +30,7 @@ class BusinessUpdate(BaseModel):
     address: Optional[str] = None
     timezone: Optional[str] = None
     logo_url: Optional[str] = None
+    primary_color: Optional[str] = None
 
 
 class BusinessResponse(BaseModel):
@@ -46,6 +47,7 @@ class BusinessResponse(BaseModel):
     subscription_status: str
     trial_ends_at: Optional[datetime]
     onboarding_complete: bool
+    primary_color: Optional[str]
     email_confirmations: bool
     email_reminders: bool
     sms_reminders: bool

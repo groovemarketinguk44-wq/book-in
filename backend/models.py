@@ -22,6 +22,7 @@ class Business(Base):
     subscription_status = Column(String, default="trial")  # trial, active, cancelled, expired
     trial_ends_at = Column(DateTime)
     onboarding_complete = Column(Boolean, default=False)
+    primary_color = Column(String, default="#111827")
     email_confirmations = Column(Boolean, default=True)
     email_reminders = Column(Boolean, default=True)
     sms_reminders = Column(Boolean, default=False)

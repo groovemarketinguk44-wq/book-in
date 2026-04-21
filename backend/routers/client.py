@@ -31,6 +31,7 @@ def get_business_info(slug: str, db: Session = Depends(get_db)):
         "address": biz.address,
         "logo_url": biz.logo_url,
         "timezone": biz.timezone,
+        "primary_color": biz.primary_color or "#111827",
     }
 
 
