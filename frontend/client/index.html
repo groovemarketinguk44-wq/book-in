@@ -7,24 +7,22 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body{font-family:'Inter',sans-serif;}
-    .step{display:none;}
-    .step.active{display:block;}
-    .slot-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;}
-    .slot-btn:hover,.slot-btn.selected{border-color:#111827;background:#111827;color:#fff;}
-    .cal-day{border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .15s;}
-    .cal-day:hover:not(.disabled){background:#f3f4f6;}
-    .cal-day.selected{background:#111827;color:#fff;}
-    .cal-day.today{font-weight:700;}
-    .cal-day.disabled{color:#d1d5db;cursor:default;}
-    .cal-day.has-slots{position:relative;}
-    .cal-day.has-slots::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:#3b82f6;border-radius:50%;}
+    body { font-family: 'Inter', sans-serif; }
+    .step { display: none; }
+    .step.active { display: block; }
+    .slot-btn { border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .15s; background: white; }
+    .slot-btn:hover, .slot-btn.selected { border-color: #111827; background: #111827; color: #fff; }
+    .cal-day { border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all .15s; }
+    .cal-day:hover:not(.disabled) { background: #f3f4f6; }
+    .cal-day.selected { background: #111827; color: #fff; }
+    .cal-day.today { font-weight: 700; }
+    .cal-day.disabled { color: #d1d5db; cursor: default; pointer-events: none; }
   </style>
 </head>
 <body class="bg-white min-h-screen">
 
   <!-- Header -->
-  <header id="bizHeader" class="border-b border-gray-100 px-6 py-5">
+  <header class="border-b border-gray-100 px-6 py-5">
     <div class="max-w-2xl mx-auto flex items-center gap-3">
       <img id="bizLogo" class="hidden h-10 w-10 rounded-xl object-cover" alt="">
       <div>
@@ -36,11 +34,16 @@
 
   <main class="max-w-2xl mx-auto px-6 py-8">
 
-    <!-- Step 1: Choose category / service -->
+    <!-- Step 1: Categories → Services -->
     <div id="step1" class="step active">
       <h2 class="text-xl font-bold mb-1">Book an appointment</h2>
       <p class="text-gray-400 text-sm mb-6">Choose a service to get started</p>
-      <div id="serviceList" class="space-y-3"></div>
+
+      <!-- Category filter tabs (shown when >1 category) -->
+      <div id="catTabs" class="hidden flex gap-2 mb-5 overflow-x-auto pb-1"></div>
+
+      <!-- Service grid -->
+      <div id="serviceGrid" class="grid grid-cols-2 gap-3"></div>
     </div>
 
     <!-- Step 2: Choose date & time -->
@@ -50,7 +53,9 @@
         Back
       </button>
 
-      <div id="selectedServiceCard" class="border border-gray-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+      <!-- Selected service summary -->
+      <div id="selectedServiceCard" class="border border-gray-100 bg-gray-50 rounded-2xl p-4 mb-6 flex items-center gap-3">
+        <img id="selSvcImg" class="hidden w-14 h-14 rounded-xl object-cover flex-shrink-0" src="" alt="">
         <div>
           <p id="selSvcName" class="font-semibold text-sm"></p>
           <p id="selSvcMeta" class="text-xs text-gray-400 mt-0.5"></p>
@@ -94,7 +99,6 @@
       </div>
 
       <h2 class="text-lg font-bold mb-4">Your details</h2>
-
       <div id="bookingError" class="hidden mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></div>
 
       <div class="space-y-4">
@@ -114,7 +118,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-1.5">Notes <span class="text-gray-400 font-normal">(optional)</span></label>
           <textarea id="custNotes" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" placeholder="Anything we should know?"></textarea>
         </div>
-        <button id="bookBtn" onclick="confirmBooking()" class="w-full bg-gray-900 text-white py-3.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition disabled:opacity-50">
+        <button id="bookBtn" onclick="confirmBooking()" class="w-full bg-gray-900 text-white py-3.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">
           Confirm Booking
         </button>
         <p class="text-xs text-center text-gray-400">You'll receive a confirmation email</p>
@@ -128,7 +132,6 @@
   </footer>
 
   <script>
-    // Determine slug: from URL path /book/{slug} or subdomain
     function getSlug() {
       const path = window.location.pathname;
       const match = path.match(/^\/book\/([^\/]+)/);
@@ -140,11 +143,12 @@
     }
 
     const slug = getSlug();
-    if (!slug) document.getElementById('bizName').textContent = 'Business not found';
-
+    let allServices = [];
+    let allCategories = [];
     let selectedService = null;
     let selectedDate = null;
     let selectedSlot = null;
+    let activeCatId = null;
     let calYear, calMonth;
 
     function goStep(n) {
@@ -167,56 +171,84 @@
         img.src = biz.logo_url;
         img.classList.remove('hidden');
       }
-      loadServices();
-    }
 
-    async function loadServices() {
       const [cats, svcs] = await Promise.all([
         fetch(`/api/client/${slug}/categories`).then(r => r.json()),
         fetch(`/api/client/${slug}/services`).then(r => r.json()),
       ]);
+      allCategories = cats;
+      allServices = svcs;
 
-      const container = document.getElementById('serviceList');
+      renderCategoryTabs();
+      renderServices(null);
+    }
+
+    function renderCategoryTabs() {
+      const tabsEl = document.getElementById('catTabs');
+      if (allCategories.length <= 1) return;
+
+      tabsEl.classList.remove('hidden');
+      const all = `<button onclick="filterCat(null, this)" class="cat-tab flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium bg-gray-900 text-white transition">All</button>`;
+      const tabs = allCategories.map(c =>
+        `<button onclick="filterCat(${c.id}, this)" class="cat-tab flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition">${c.name}</button>`
+      ).join('');
+      tabsEl.innerHTML = all + tabs;
+    }
+
+    function filterCat(catId, btn) {
+      activeCatId = catId;
+      document.querySelectorAll('.cat-tab').forEach(b => {
+        b.className = 'cat-tab flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition';
+      });
+      btn.className = 'cat-tab flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium bg-gray-900 text-white transition';
+      renderServices(catId);
+    }
+
+    function renderServices(catId) {
+      const svcs = catId ? allServices.filter(s => s.category_id == catId) : allServices;
+      const grid = document.getElementById('serviceGrid');
+
       if (!svcs.length) {
-        container.innerHTML = '<p class="text-gray-400 text-sm">No services available</p>';
+        grid.innerHTML = '<p class="col-span-2 text-gray-400 text-sm">No services available</p>';
         return;
       }
 
-      const byCat = {};
-      svcs.forEach(s => {
-        const key = s.category_id || 0;
-        if (!byCat[key]) byCat[key] = [];
-        byCat[key].push(s);
-      });
+      grid.innerHTML = svcs.map(s => {
+        const img = s.image_url
+          ? `<img src="${s.image_url}" alt="${s.name}" class="w-full h-36 object-cover">`
+          : `<div class="w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+               <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+               </svg>
+             </div>`;
 
-      let html = '';
-      Object.entries(byCat).forEach(([catId, services]) => {
-        const cat = cats.find(c => c.id == catId);
-        if (cat) html += `<h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4">${cat.name}</h3>`;
-        services.forEach(s => {
-          html += `
-            <button onclick="selectService(${JSON.stringify(s).replace(/"/g, '&quot;')})"
-              class="w-full text-left border border-gray-200 rounded-2xl p-4 hover:border-gray-900 hover:bg-gray-50 transition group">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="font-semibold text-sm group-hover:text-gray-900">${s.name}</p>
-                  ${s.description ? `<p class="text-xs text-gray-400 mt-0.5">${s.description}</p>` : ''}
-                </div>
-                <div class="text-right flex-shrink-0 ml-4">
-                  <p class="font-semibold text-sm">£${parseFloat(s.price).toFixed(2)}</p>
-                  <p class="text-xs text-gray-400">${s.duration_minutes} mins</p>
-                </div>
+        return `
+          <button onclick='selectService(${JSON.stringify(s).replace(/'/g, "&#39;")})'
+            class="group text-left border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-900 hover:shadow-md transition-all duration-200 bg-white">
+            <div class="overflow-hidden">${img}</div>
+            <div class="p-3">
+              <p class="font-semibold text-sm leading-tight group-hover:text-gray-900">${s.name}</p>
+              ${s.description ? `<p class="text-xs text-gray-400 mt-0.5 line-clamp-1">${s.description}</p>` : ''}
+              <div class="flex items-center justify-between mt-2">
+                <span class="text-sm font-bold">£${parseFloat(s.price).toFixed(2)}</span>
+                <span class="text-xs text-gray-400">${s.duration_minutes} mins</span>
               </div>
-            </button>`;
-        });
-      });
-      container.innerHTML = html;
+            </div>
+          </button>`;
+      }).join('');
     }
 
     function selectService(svc) {
       selectedService = svc;
       document.getElementById('selSvcName').textContent = svc.name;
       document.getElementById('selSvcMeta').textContent = `£${parseFloat(svc.price).toFixed(2)} · ${svc.duration_minutes} mins`;
+      const imgEl = document.getElementById('selSvcImg');
+      if (svc.image_url) {
+        imgEl.src = svc.image_url;
+        imgEl.classList.remove('hidden');
+      } else {
+        imgEl.classList.add('hidden');
+      }
 
       const now = new Date();
       calYear = now.getFullYear();
@@ -227,13 +259,12 @@
 
     function renderCalendar() {
       const d = new Date(calYear, calMonth, 1);
-      const monthName = d.toLocaleDateString('en-GB', {month:'long', year:'numeric'});
-      document.getElementById('calMonthLabel').textContent = monthName;
+      document.getElementById('calMonthLabel').textContent =
+        d.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
 
       const startDay = (d.getDay() + 6) % 7;
       const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-      const today = new Date();
-      today.setHours(0,0,0,0);
+      const today = new Date(); today.setHours(0,0,0,0);
 
       let html = '';
       for (let i = 0; i < startDay; i++) html += '<div></div>';
@@ -246,7 +277,7 @@
           selectedDate.getFullYear() === calYear;
         const isToday = date.toDateString() === today.toDateString();
 
-        html += `<div class="cal-day ${isPast ? 'disabled' : ''} ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}"
+        html += `<div class="cal-day ${isPast ? 'disabled' : ''} ${isSelected ? 'selected' : ''} ${isToday && !isSelected ? 'today' : ''}"
           onclick="${isPast ? '' : `selectDate(${calYear},${calMonth},${day})`}">${day}</div>`;
       }
       document.getElementById('calGrid').innerHTML = html;
@@ -272,7 +303,7 @@
       const dateStr = selectedDate.toISOString().split('T')[0];
       const slots = await fetch(`/api/slots/client/${slug}/${selectedService.id}?date=${dateStr}`).then(r => r.json());
 
-      const label = selectedDate.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+      const label = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
       document.getElementById('slotsLabel').textContent = label;
 
       const grid = document.getElementById('slotGrid');
@@ -291,11 +322,11 @@
       document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
 
-      const dateLabel = selectedDate.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+      const dateLabel = selectedDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
       document.getElementById('confirmSvcName').textContent = selectedService.name;
       document.getElementById('confirmDateTime').textContent = `${dateLabel} at ${time} · £${parseFloat(selectedService.price).toFixed(2)}`;
 
-      setTimeout(() => goStep(3), 200);
+      setTimeout(() => goStep(3), 180);
     }
 
     async function confirmBooking() {
@@ -319,7 +350,7 @@
       try {
         const res = await fetch(`/api/client/${slug}/book`, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             customer_name: name,
             customer_email: email,
@@ -332,13 +363,7 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || 'Booking failed');
 
-        // Redirect to confirmation
-        const params = new URLSearchParams({
-          name, email,
-          service: selectedService.name,
-          time: selectedSlot,
-          slug,
-        });
+        const params = new URLSearchParams({ name, email, service: selectedService.name, time: selectedSlot, slug });
         window.location.href = `/book/${slug}/confirmation?${params}`;
       } catch(ex) {
         errEl.textContent = ex.message;
@@ -348,7 +373,8 @@
       }
     }
 
-    init();
+    if (slug) init();
+    else document.getElementById('bizName').textContent = 'Business not found';
   </script>
 </body>
 </html>

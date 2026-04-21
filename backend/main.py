@@ -10,6 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from .database import engine
 from .models import Base
 from .middleware import TenantMiddleware
+from .config import settings as app_settings
 from .routers import (
     auth,
     bookings,
@@ -22,6 +23,7 @@ from .routers import (
     settings,
     slots,
     stripe_routes,
+    upload,
 )
 from .services.reminder_worker import start_reminder_scheduler
 
@@ -31,6 +33,8 @@ FRONTEND = Path(__file__).parent.parent / "frontend"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
+    # Ensure upload dir exists
+    Path(app_settings.UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
     scheduler = start_reminder_scheduler()
     yield
     scheduler.shutdown()
@@ -50,6 +54,11 @@ app.add_middleware(
 if (FRONTEND / "static").exists():
     app.mount("/static", StaticFiles(directory=str(FRONTEND / "static")), name="static")
 
+# Uploaded images
+_upload_path = Path(app_settings.UPLOAD_DIR)
+_upload_path.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(_upload_path)), name="uploads")
+
 # API routers
 for r in [
     auth.router,
@@ -63,6 +72,7 @@ for r in [
     stripe_routes.router,
     email_oauth.router,
     client.router,
+    upload.router,
 ]:
     app.include_router(r)
 

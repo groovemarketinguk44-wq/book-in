@@ -31,6 +31,7 @@ class Settings(BaseSettings):
 
     APP_DOMAIN: str = "book-in.app"
     APP_URL: str = "http://localhost:8000"
+    UPLOAD_DIR: str = "./uploads"
 
     class Config:
         env_file = ".env"

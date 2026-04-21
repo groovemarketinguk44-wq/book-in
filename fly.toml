@@ -1,27 +1,31 @@
-app = "book-in"
-primary_region = "lhr"
+# fly.toml app configuration file generated for book-in on 2026-04-21T10:50:10+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'book-in'
+primary_region = 'lhr'
 
 [build]
 
 [http_service]
   internal_port = 8000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
-
-  [[http_service.checks]]
-    grace_period = "10s"
-    interval = "30s"
-    method = "GET"
-    path = "/"
-    timeout = "5s"
+  min_machines_running = 0
+  processes = ['app']
 
 [[vm]]
-  memory = "512mb"
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 1024
 
 [env]
-  APP_URL = "https://book-in.fly.dev"
-  APP_DOMAIN = "book-in.fly.dev"
+  UPLOAD_DIR = "/data/uploads"
+
+[[mounts]]
+  source = "book_in_uploads"
+  destination = "/data/uploads"
+  initial_size = "1gb"
