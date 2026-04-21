@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup — Book-In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>body{font-family:'Inter',sans-serif;} .step{display:none;} .step.active{display:block;}</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <div class="max-w-lg mx-auto px-6 py-16">
+    <!-- Header -->
+    <div class="text-center mb-10">
+      <a href="/" class="text-xl font-bold">Book-In</a>
+      <p class="text-gray-500 text-sm mt-1">Let's set up your booking page</p>
+    </div>
+
+    <!-- Steps indicator -->
+    <div class="flex items-center justify-center gap-2 mb-10">
+      <div id="dot1" class="w-2.5 h-2.5 rounded-full bg-gray-900 transition-all"></div>
+      <div id="dot2" class="w-2.5 h-2.5 rounded-full bg-gray-200 transition-all"></div>
+      <div id="dot3" class="w-2.5 h-2.5 rounded-full bg-gray-200 transition-all"></div>
+      <div id="dot4" class="w-2.5 h-2.5 rounded-full bg-gray-200 transition-all"></div>
+    </div>
+
+    <div id="error" class="hidden mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3"></div>
+
+    <!-- Step 1: Business details -->
+    <div id="step1" class="step active bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+      <h2 class="text-xl font-bold mb-1">Your business</h2>
+      <p class="text-gray-500 text-sm mb-6">Tell us a bit about your business</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Business name</label>
+          <input id="s1_name" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Fades by Ben">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Address <span class="text-gray-400 font-normal">(optional)</span></label>
+          <input id="s1_address" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123 High Street, London">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone <span class="text-gray-400 font-normal">(optional)</span></label>
+          <input id="s1_phone" type="tel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+44 7700 000000">
+        </div>
+        <button onclick="goStep1()" class="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Category -->
+    <div id="step2" class="step bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+      <h2 class="text-xl font-bold mb-1">Create a category</h2>
+      <p class="text-gray-500 text-sm mb-6">Group your services (e.g. Haircuts, Colour, Treatments)</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Category name</label>
+          <input id="s2_name" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Haircuts">
+        </div>
+        <button onclick="goStep2()" class="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Service -->
+    <div id="step3" class="step bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+      <h2 class="text-xl font-bold mb-1">Add your first service</h2>
+      <p class="text-gray-500 text-sm mb-6">You can add more later from your dashboard</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Service name</label>
+          <input id="s3_name" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Skin Fade">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Price (£)</label>
+            <input id="s3_price" type="number" min="0" step="0.01" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="25.00">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Duration (mins)</label>
+            <input id="s3_duration" type="number" min="15" step="15" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="45">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Description <span class="text-gray-400 font-normal">(optional)</span></label>
+          <textarea id="s3_desc" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Short description…"></textarea>
+        </div>
+        <button onclick="goStep3()" class="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Done -->
+    <div id="step4" class="step bg-white rounded-2xl border border-gray-200 p-8 shadow-sm text-center">
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h2 class="text-xl font-bold mb-2">You're all set!</h2>
+      <p class="text-gray-500 text-sm mb-2">Your booking page is live at:</p>
+      <p id="bookingUrl" class="text-blue-600 font-medium text-sm mb-8 break-all"></p>
+      <a href="/dashboard" class="w-full block bg-gray-900 text-white py-3 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">
+        Go to Dashboard →
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const API = '';
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/login';
+
+    let categoryId = null;
+
+    function showError(msg) {
+      const el = document.getElementById('error');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+
+    function hideError() {
+      document.getElementById('error').classList.add('hidden');
+    }
+
+    function setStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById('dot' + i);
+        dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i <= n ? 'bg-gray-900' : 'bg-gray-200'}`;
+      }
+      hideError();
+    }
+
+    async function api(path, data) {
+      const res = await fetch(API + path, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${token}`},
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.detail || 'Error');
+      return json;
+    }
+
+    async function goStep1() {
+      const name = document.getElementById('s1_name').value.trim();
+      if (!name) return showError('Business name is required');
+      try {
+        await api('/api/onboarding/step1', {
+          name,
+          address: document.getElementById('s1_address').value,
+          phone: document.getElementById('s1_phone').value,
+        });
+        setStep(2);
+      } catch(e) { showError(e.message); }
+    }
+
+    async function goStep2() {
+      const name = document.getElementById('s2_name').value.trim();
+      if (!name) return showError('Category name is required');
+      try {
+        const data = await api('/api/onboarding/step2', { name });
+        categoryId = data.id;
+        setStep(3);
+      } catch(e) { showError(e.message); }
+    }
+
+    async function goStep3() {
+      const name = document.getElementById('s3_name').value.trim();
+      const price = document.getElementById('s3_price').value;
+      const duration = document.getElementById('s3_duration').value;
+      if (!name || !price || !duration) return showError('Please fill in all required fields');
+      try {
+        await api('/api/onboarding/step3', {
+          name,
+          price: parseFloat(price),
+          duration_minutes: parseInt(duration),
+          description: document.getElementById('s3_desc').value,
+          category_id: categoryId,
+        });
+        await api('/api/onboarding/complete', {});
+
+        // Decode slug from JWT
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const slug = await getSlug(payload.business_id);
+        document.getElementById('bookingUrl').textContent = `${window.location.origin}/book/${slug}`;
+        setStep(4);
+      } catch(e) { showError(e.message); }
+    }
+
+    async function getSlug(businessId) {
+      const res = await fetch('/api/settings', {headers: {'Authorization': `Bearer ${token}`}});
+      const data = await res.json();
+      return data.slug || '';
+    }
+  </script>
+</body>
+</html>

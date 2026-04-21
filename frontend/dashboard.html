@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Book-In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Inter',sans-serif;}
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
+    .nav-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:500;color:#9ca3af;transition:all .15s;cursor:pointer;}
+    .nav-link:hover,.nav-link.active{background:rgba(255,255,255,.08);color:#fff;}
+    .nav-link svg{width:18px;height:18px;flex-shrink:0;}
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-60 bg-gray-900 flex flex-col min-h-screen fixed left-0 top-0 bottom-0 z-10">
+    <div class="px-5 py-6 border-b border-white/10">
+      <span class="text-white font-bold text-lg">Book-In</span>
+      <p id="bizName" class="text-gray-400 text-xs mt-0.5 truncate"></p>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-0.5">
+      <div class="nav-link active" onclick="showTab('services')" id="nav-services">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Services
+      </div>
+      <div class="nav-link" onclick="showTab('bookings')" id="nav-bookings">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Bookings
+      </div>
+      <div class="nav-link" onclick="showTab('calendar')" id="nav-calendar">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Calendar
+      </div>
+      <div class="nav-link" onclick="showTab('financials')" id="nav-financials">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Financials
+      </div>
+      <div class="nav-link" onclick="showTab('settings')" id="nav-settings">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Settings
+      </div>
+    </nav>
+
+    <div class="px-3 pb-4 space-y-0.5">
+      <div id="bookingPageLink" class="nav-link text-xs">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        Booking page
+      </div>
+      <div class="nav-link" onclick="logout()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Log out
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="ml-60 flex-1 p-8 min-h-screen">
+
+    <!-- Services tab -->
+    <div id="tab-services" class="tab-content active">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Services & Categories</h1>
+        <div class="flex gap-2">
+          <button onclick="openCategoryModal()" class="border border-gray-300 text-sm px-4 py-2 rounded-xl hover:bg-gray-50 transition font-medium">+ Category</button>
+          <button onclick="openServiceModal()" class="bg-gray-900 text-white text-sm px-4 py-2 rounded-xl hover:bg-gray-700 transition font-medium">+ Service</button>
+        </div>
+      </div>
+
+      <div id="servicesList" class="space-y-3"></div>
+    </div>
+
+    <!-- Bookings tab -->
+    <div id="tab-bookings" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Bookings</h1>
+        <select id="bookingFilter" onchange="loadBookings()" class="border border-gray-200 rounded-xl px-3 py-2 text-sm">
+          <option value="">All</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div id="bookingsList" class="space-y-3"></div>
+    </div>
+
+    <!-- Calendar tab -->
+    <div id="tab-calendar" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Calendar</h1>
+        <div class="flex items-center gap-3">
+          <button onclick="prevWeek()" class="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <span id="calWeekLabel" class="text-sm font-medium min-w-44 text-center"></span>
+          <button onclick="nextWeek()" class="p-2 border border-gray-200 rounded-xl hover:bg-gray-50 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+      <div id="calGrid" class="bg-white rounded-2xl border border-gray-200 overflow-hidden"></div>
+    </div>
+
+    <!-- Financials tab -->
+    <div id="tab-financials" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Financials</h1>
+        <select id="financialsPeriod" onchange="loadFinancials()" class="border border-gray-200 rounded-xl px-3 py-2 text-sm">
+          <option value="this_week">This week</option>
+          <option value="last_week">Last week</option>
+          <option value="this_month" selected>This month</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Today</p>
+          <p id="stat-daily" class="text-2xl font-bold">£0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">This week</p>
+          <p id="stat-weekly" class="text-2xl font-bold">£0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">This month</p>
+          <p id="stat-monthly" class="text-2xl font-bold">£0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Avg booking</p>
+          <p id="stat-avg" class="text-2xl font-bold">£0</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-200 p-6">
+        <canvas id="revenueChart" height="80"></canvas>
+      </div>
+    </div>
+
+    <!-- Settings tab -->
+    <div id="tab-settings" class="tab-content">
+      <h1 class="text-2xl font-bold mb-6">Settings</h1>
+
+      <div class="max-w-xl space-y-6">
+        <!-- Business info -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="font-semibold mb-4">Business Details</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Business name</label>
+              <input id="set_name" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
+              <input id="set_phone" type="tel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Address</label>
+              <input id="set_address" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Timezone</label>
+              <select id="set_timezone" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option>Europe/London</option>
+                <option>Europe/Paris</option>
+                <option>America/New_York</option>
+                <option>America/Los_Angeles</option>
+                <option>Australia/Sydney</option>
+              </select>
+            </div>
+            <button onclick="saveSettings()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">Save</button>
+          </div>
+        </div>
+
+        <!-- Notifications -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="font-semibold mb-4">Notifications</h3>
+          <div class="space-y-4">
+            <label class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium">Email confirmations</p>
+                <p class="text-xs text-gray-500">Send booking confirmation emails to clients</p>
+              </div>
+              <input id="notif_email_conf" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+            <label class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium">Email reminders</p>
+                <p class="text-xs text-gray-500">Send 24h reminder emails to clients</p>
+              </div>
+              <input id="notif_email_rem" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+            <label class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium">SMS reminders</p>
+                <p class="text-xs text-gray-500">Send 24h reminder texts via Twilio</p>
+              </div>
+              <input id="notif_sms" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+            <button onclick="saveNotifications()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">Save</button>
+          </div>
+        </div>
+
+        <!-- Email account -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="font-semibold mb-1">Connected Email</h3>
+          <p class="text-sm text-gray-500 mb-4">Emails will be sent from your own email account</p>
+          <div id="emailAccountStatus" class="mb-4"></div>
+          <div class="flex gap-2">
+            <a id="gmailBtn" href="/api/email/google/connect" class="flex items-center gap-2 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition">
+              <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#EA4335" d="M5.27 9.76C6.19 7.1 8.7 5.2 11.6 5.2c1.68 0 3.19.58 4.37 1.56l3.27-3.27C17.29 1.67 14.63.6 11.6.6 6.92.6 2.9 3.5 1.18 7.7l4.09 2.06z"/><path fill="#34A853" d="M15.76 18.13c-1.1.7-2.5 1.07-4.16 1.07-2.88 0-5.37-1.88-6.3-4.52L1.19 16.8C2.91 21.02 6.94 23.9 11.6 23.9c2.93 0 5.57-.99 7.6-2.74l-3.44-3.03z"/><path fill="#4A90D9" d="M19.2 21.16c2.14-2.01 3.4-5.04 3.4-8.76 0-.74-.1-1.54-.26-2.28H11.6v4.82h6.26c-.3 1.52-1.14 2.75-2.34 3.62l3.68 2.6z"/><path fill="#FBBC05" d="M5.3 14.68c-.25-.72-.38-1.49-.38-2.28s.13-1.56.37-2.28L1.2 7.94A11.28 11.28 0 000 12.4c0 1.56.3 3.04.84 4.4l4.46-2.12z"/></svg>
+              Connect Gmail
+            </a>
+            <a id="outlookBtn" href="/api/email/microsoft/connect" class="flex items-center gap-2 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition">
+              <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#0078D4" d="M2 4l10 2v12L2 20V4zm11 2h7a1 1 0 011 1v10a1 1 0 01-1 1h-7V6z"/></svg>
+              Connect Outlook
+            </a>
+            <button id="disconnectEmailBtn" onclick="disconnectEmail()" class="hidden text-sm text-red-600 px-3 py-2 rounded-xl hover:bg-red-50 transition">Disconnect</button>
+          </div>
+        </div>
+
+        <!-- Billing -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="font-semibold mb-1">Billing</h3>
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm" id="subStatus">Loading…</p>
+              <p class="text-xs text-gray-500 mt-0.5">£9.99/month after trial</p>
+            </div>
+            <button onclick="startCheckout()" id="checkoutBtn" class="hidden bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-blue-500 transition">
+              Upgrade
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Category Modal -->
+  <div id="categoryModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+      <h3 class="font-bold mb-4" id="catModalTitle">New Category</h3>
+      <input id="catName" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Category name">
+      <div class="flex gap-2">
+        <button onclick="saveCategory()" class="flex-1 bg-gray-900 text-white py-2.5 rounded-xl text-sm font-semibold">Save</button>
+        <button onclick="closeCategoryModal()" class="flex-1 border border-gray-200 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Modal -->
+  <div id="serviceModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+      <h3 class="font-bold mb-4" id="svcModalTitle">New Service</h3>
+      <div class="space-y-3">
+        <input id="svcName" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Service name">
+        <textarea id="svcDesc" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Description (optional)"></textarea>
+        <div class="grid grid-cols-2 gap-3">
+          <input id="svcPrice" type="number" step="0.01" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Price £">
+          <input id="svcDuration" type="number" step="15" class="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Duration mins">
+        </div>
+        <select id="svcCategory" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">No category</option>
+        </select>
+      </div>
+      <input type="hidden" id="svcId">
+      <div class="flex gap-2 mt-4">
+        <button onclick="saveService()" class="flex-1 bg-gray-900 text-white py-2.5 rounded-xl text-sm font-semibold">Save</button>
+        <button onclick="closeServiceModal()" class="flex-1 border border-gray-200 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/login';
+
+    let bizSlug = '';
+    let categories = [];
+    let chart = null;
+    let calWeekOffset = 0;
+    let editCatId = null;
+    let editSvcId = null;
+
+    const api = async (path, method = 'GET', body = null) => {
+      const opts = { method, headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } };
+      if (body) opts.body = JSON.stringify(body);
+      const r = await fetch(path, opts);
+      if (r.status === 401) { localStorage.removeItem('token'); window.location.href = '/login'; }
+      return r.json();
+    };
+
+    function showTab(name) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      document.getElementById('nav-' + name).classList.add('active');
+      if (name === 'services') loadServices();
+      if (name === 'bookings') loadBookings();
+      if (name === 'calendar') loadCalendar();
+      if (name === 'financials') loadFinancials();
+      if (name === 'settings') loadSettings();
+    }
+
+    async function init() {
+      const biz = await api('/api/settings');
+      bizSlug = biz.slug || '';
+      document.getElementById('bizName').textContent = biz.name;
+      const link = document.getElementById('bookingPageLink');
+      link.onclick = () => window.open('/book/' + bizSlug, '_blank');
+      loadServices();
+    }
+
+    // ── Services ────────────────────────────────────────────────────────────
+
+    async function loadServices() {
+      const [svcs, cats] = await Promise.all([api('/api/services'), api('/api/categories')]);
+      categories = cats;
+
+      const container = document.getElementById('servicesList');
+      if (!svcs.length) {
+        container.innerHTML = '<p class="text-gray-400 text-sm">No services yet. Click + Service to add one.</p>';
+        return;
+      }
+
+      // Group by category
+      const byCat = {};
+      svcs.forEach(s => {
+        const key = s.category_id || 0;
+        if (!byCat[key]) byCat[key] = [];
+        byCat[key].push(s);
+      });
+
+      let html = '';
+      Object.entries(byCat).forEach(([catId, services]) => {
+        const cat = cats.find(c => c.id == catId);
+        if (cat) html += `<h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-4 mb-2 px-1">${cat.name}</h3>`;
+        services.forEach(s => {
+          html += `
+            <div class="bg-white rounded-2xl border border-gray-200 p-4 flex items-center justify-between">
+              <div>
+                <p class="font-medium text-sm">${s.name}</p>
+                <p class="text-xs text-gray-400 mt-0.5">£${parseFloat(s.price).toFixed(2)} · ${s.duration_minutes} mins</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs px-2 py-1 rounded-full ${s.active ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'}">${s.active ? 'Active' : 'Inactive'}</span>
+                <button onclick="openServiceModal(${JSON.stringify(s).replace(/"/g, '&quot;')})" class="text-gray-400 hover:text-gray-700 p-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+              </div>
+            </div>`;
+        });
+      });
+      container.innerHTML = html;
+    }
+
+    function openCategoryModal(cat = null) {
+      editCatId = cat ? cat.id : null;
+      document.getElementById('catModalTitle').textContent = cat ? 'Edit Category' : 'New Category';
+      document.getElementById('catName').value = cat ? cat.name : '';
+      document.getElementById('categoryModal').classList.remove('hidden');
+    }
+
+    function closeCategoryModal() {
+      document.getElementById('categoryModal').classList.add('hidden');
+    }
+
+    async function saveCategory() {
+      const name = document.getElementById('catName').value.trim();
+      if (!name) return;
+      if (editCatId) {
+        await api(`/api/categories/${editCatId}`, 'PUT', { name });
+      } else {
+        await api('/api/categories', 'POST', { name });
+      }
+      closeCategoryModal();
+      loadServices();
+    }
+
+    function openServiceModal(svc = null) {
+      editSvcId = svc ? svc.id : null;
+      document.getElementById('svcModalTitle').textContent = svc ? 'Edit Service' : 'New Service';
+      document.getElementById('svcName').value = svc ? svc.name : '';
+      document.getElementById('svcDesc').value = svc ? (svc.description || '') : '';
+      document.getElementById('svcPrice').value = svc ? svc.price : '';
+      document.getElementById('svcDuration').value = svc ? svc.duration_minutes : '';
+
+      const catSelect = document.getElementById('svcCategory');
+      catSelect.innerHTML = '<option value="">No category</option>';
+      categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (svc && svc.category_id == c.id) opt.selected = true;
+        catSelect.appendChild(opt);
+      });
+
+      document.getElementById('serviceModal').classList.remove('hidden');
+    }
+
+    function closeServiceModal() {
+      document.getElementById('serviceModal').classList.add('hidden');
+    }
+
+    async function saveService() {
+      const data = {
+        name: document.getElementById('svcName').value.trim(),
+        description: document.getElementById('svcDesc').value,
+        price: parseFloat(document.getElementById('svcPrice').value),
+        duration_minutes: parseInt(document.getElementById('svcDuration').value),
+        category_id: document.getElementById('svcCategory').value || null,
+      };
+      if (!data.name || !data.price || !data.duration_minutes) return;
+      if (editSvcId) {
+        await api(`/api/services/${editSvcId}`, 'PUT', data);
+      } else {
+        await api('/api/services', 'POST', data);
+      }
+      closeServiceModal();
+      loadServices();
+    }
+
+    // ── Bookings ─────────────────────────────────────────────────────────────
+
+    async function loadBookings() {
+      const status = document.getElementById('bookingFilter').value;
+      const params = status ? `?status=${status}` : '';
+      const bookings = await api('/api/bookings' + params);
+      const container = document.getElementById('bookingsList');
+
+      if (!bookings.length) {
+        container.innerHTML = '<p class="text-gray-400 text-sm">No bookings found.</p>';
+        return;
+      }
+
+      const statusColors = {
+        confirmed: 'bg-blue-50 text-blue-700',
+        completed: 'bg-green-50 text-green-700',
+        cancelled: 'bg-red-50 text-red-600',
+      };
+
+      container.innerHTML = bookings.map(b => `
+        <div class="bg-white rounded-2xl border border-gray-200 p-4">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="font-medium text-sm">${b.customer_name}</p>
+              <p class="text-xs text-gray-400">${b.customer_email}${b.customer_phone ? ' · ' + b.customer_phone : ''}</p>
+              <p class="text-xs text-gray-600 mt-1">${b.service_name || 'Service'} · ${new Date(b.start_time).toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'})}</p>
+              ${b.notes ? `<p class="text-xs text-gray-400 mt-1 italic">"${b.notes}"</p>` : ''}
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs px-2 py-1 rounded-full ${statusColors[b.status] || 'bg-gray-100'}">${b.status}</span>
+              ${b.status === 'confirmed' ? `
+                <button onclick="updateBookingStatus(${b.id},'completed')" title="Mark complete" class="text-green-500 hover:text-green-700 p-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </button>
+                <button onclick="updateBookingStatus(${b.id},'cancelled')" title="Cancel" class="text-red-400 hover:text-red-600 p-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function updateBookingStatus(id, status) {
+      await api(`/api/bookings/${id}`, 'PATCH', { status });
+      loadBookings();
+    }
+
+    // ── Calendar ─────────────────────────────────────────────────────────────
+
+    function prevWeek() { calWeekOffset--; loadCalendar(); }
+    function nextWeek() { calWeekOffset++; loadCalendar(); }
+
+    async function loadCalendar() {
+      const now = new Date();
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - ((now.getDay() + 6) % 7) + calWeekOffset * 7);
+      monday.setHours(0,0,0,0);
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      document.getElementById('calWeekLabel').textContent =
+        monday.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' – ' +
+        sunday.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+
+      const dateFrom = monday.toISOString();
+      const dateTo = sunday.toISOString();
+      const bookings = await api(`/api/bookings?date_from=${dateFrom}&date_to=${dateTo}`);
+
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        days.push(d);
+      }
+
+      const hours = Array.from({length: 10}, (_, i) => i + 9);
+      const dayNames = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+      let html = '<div class="grid" style="grid-template-columns: 60px repeat(7, 1fr);">';
+      // Header
+      html += '<div class="border-b border-r border-gray-100 p-2"></div>';
+      days.forEach((d, i) => {
+        const isToday = d.toDateString() === new Date().toDateString();
+        html += `<div class="border-b border-r border-gray-100 p-2 text-center">
+          <p class="text-xs text-gray-400">${dayNames[i]}</p>
+          <p class="text-sm font-semibold ${isToday ? 'bg-blue-600 text-white rounded-full w-7 h-7 flex items-center justify-center mx-auto' : ''}">${d.getDate()}</p>
+        </div>`;
+      });
+
+      // Hour rows
+      hours.forEach(h => {
+        html += `<div class="border-b border-r border-gray-100 p-2 text-xs text-gray-400 text-right">${h}:00</div>`;
+        days.forEach(d => {
+          const slotStart = new Date(d);
+          slotStart.setHours(h, 0, 0, 0);
+          const slotEnd = new Date(d);
+          slotEnd.setHours(h + 1, 0, 0, 0);
+
+          const slot = bookings.find(b => {
+            const bs = new Date(b.start_time);
+            return bs >= slotStart && bs < slotEnd;
+          });
+
+          html += `<div class="border-b border-r border-gray-100 p-1 min-h-12 relative">`;
+          if (slot) {
+            html += `<div class="bg-blue-100 text-blue-800 rounded-lg px-2 py-1 text-xs font-medium cursor-pointer hover:bg-blue-200 truncate" title="${slot.customer_name} — ${slot.service_name}">
+              ${slot.customer_name}<br><span class="text-blue-600">${slot.service_name || ''}</span>
+            </div>`;
+          }
+          html += `</div>`;
+        });
+      });
+
+      html += '</div>';
+      document.getElementById('calGrid').innerHTML = html;
+    }
+
+    // ── Financials ────────────────────────────────────────────────────────────
+
+    async function loadFinancials() {
+      const period = document.getElementById('financialsPeriod').value;
+      const data = await api(`/api/financials?period=${period}`);
+
+      document.getElementById('stat-daily').textContent = '£' + data.daily_revenue.toFixed(2);
+      document.getElementById('stat-weekly').textContent = '£' + data.weekly_revenue.toFixed(2);
+      document.getElementById('stat-monthly').textContent = '£' + data.monthly_revenue.toFixed(2);
+      document.getElementById('stat-avg').textContent = '£' + (data.avg_booking_value || 0).toFixed(2);
+
+      if (chart) chart.destroy();
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.chart_labels,
+          datasets: [{
+            label: 'Revenue (£)',
+            data: data.chart_data,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37,99,235,.08)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { callback: v => '£' + v } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // ── Settings ──────────────────────────────────────────────────────────────
+
+    async function loadSettings() {
+      const biz = await api('/api/settings');
+      document.getElementById('set_name').value = biz.name || '';
+      document.getElementById('set_phone').value = biz.phone || '';
+      document.getElementById('set_address').value = biz.address || '';
+      document.getElementById('set_timezone').value = biz.timezone || 'Europe/London';
+      document.getElementById('notif_email_conf').checked = biz.email_confirmations;
+      document.getElementById('notif_email_rem').checked = biz.email_reminders;
+      document.getElementById('notif_sms').checked = biz.sms_reminders;
+
+      const statusMap = {
+        trial: 'Free trial active', active: 'Active subscription',
+        cancelled: 'Subscription cancelled', expired: 'Subscription expired',
+      };
+      document.getElementById('subStatus').textContent = statusMap[biz.subscription_status] || biz.subscription_status;
+      if (biz.subscription_status !== 'active') {
+        document.getElementById('checkoutBtn').classList.remove('hidden');
+      }
+
+      const emailAccount = await api('/api/settings/email-account');
+      const statusEl = document.getElementById('emailAccountStatus');
+      if (emailAccount && emailAccount.email_address) {
+        statusEl.innerHTML = `<div class="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-xl px-3 py-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Connected: ${emailAccount.email_address} (${emailAccount.provider})
+        </div>`;
+        document.getElementById('disconnectEmailBtn').classList.remove('hidden');
+      } else {
+        statusEl.innerHTML = '<p class="text-sm text-gray-400">No email connected — using SendGrid fallback</p>';
+      }
+
+      // Append token for OAuth redirects
+      document.getElementById('gmailBtn').href = `/api/email/google/connect?token=${token}`;
+      document.getElementById('outlookBtn').href = `/api/email/microsoft/connect?token=${token}`;
+    }
+
+    async function saveSettings() {
+      await api('/api/settings', 'PATCH', {
+        name: document.getElementById('set_name').value,
+        phone: document.getElementById('set_phone').value,
+        address: document.getElementById('set_address').value,
+        timezone: document.getElementById('set_timezone').value,
+      });
+      document.getElementById('bizName').textContent = document.getElementById('set_name').value;
+      alert('Settings saved');
+    }
+
+    async function saveNotifications() {
+      await api('/api/settings/notifications', 'PATCH', {
+        email_confirmations: document.getElementById('notif_email_conf').checked,
+        email_reminders: document.getElementById('notif_email_rem').checked,
+        sms_reminders: document.getElementById('notif_sms').checked,
+      });
+      alert('Notification settings saved');
+    }
+
+    async function disconnectEmail() {
+      if (!confirm('Disconnect email account?')) return;
+      await api('/api/settings/email-account', 'DELETE');
+      loadSettings();
+    }
+
+    async function startCheckout() {
+      const data = await api('/api/stripe/create-checkout', 'POST');
+      if (data.url) window.location.href = data.url;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+
+    init();
+  </script>
+</body>
+</html>

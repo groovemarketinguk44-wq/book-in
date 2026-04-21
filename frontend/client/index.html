@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book an Appointment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Inter',sans-serif;}
+    .step{display:none;}
+    .step.active{display:block;}
+    .slot-btn{border:1.5px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;}
+    .slot-btn:hover,.slot-btn.selected{border-color:#111827;background:#111827;color:#fff;}
+    .cal-day{border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .15s;}
+    .cal-day:hover:not(.disabled){background:#f3f4f6;}
+    .cal-day.selected{background:#111827;color:#fff;}
+    .cal-day.today{font-weight:700;}
+    .cal-day.disabled{color:#d1d5db;cursor:default;}
+    .cal-day.has-slots{position:relative;}
+    .cal-day.has-slots::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:#3b82f6;border-radius:50%;}
+  </style>
+</head>
+<body class="bg-white min-h-screen">
+
+  <!-- Header -->
+  <header id="bizHeader" class="border-b border-gray-100 px-6 py-5">
+    <div class="max-w-2xl mx-auto flex items-center gap-3">
+      <img id="bizLogo" class="hidden h-10 w-10 rounded-xl object-cover" alt="">
+      <div>
+        <h1 id="bizName" class="font-bold text-lg">Loading…</h1>
+        <p id="bizAddress" class="text-xs text-gray-400 hidden"></p>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-6 py-8">
+
+    <!-- Step 1: Choose category / service -->
+    <div id="step1" class="step active">
+      <h2 class="text-xl font-bold mb-1">Book an appointment</h2>
+      <p class="text-gray-400 text-sm mb-6">Choose a service to get started</p>
+      <div id="serviceList" class="space-y-3"></div>
+    </div>
+
+    <!-- Step 2: Choose date & time -->
+    <div id="step2" class="step">
+      <button onclick="goStep(1)" class="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-700 mb-6 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+
+      <div id="selectedServiceCard" class="border border-gray-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+        <div>
+          <p id="selSvcName" class="font-semibold text-sm"></p>
+          <p id="selSvcMeta" class="text-xs text-gray-400 mt-0.5"></p>
+        </div>
+      </div>
+
+      <!-- Calendar -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-5 mb-5">
+        <div class="flex items-center justify-between mb-4">
+          <button onclick="prevMonth()" class="p-1.5 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <span id="calMonthLabel" class="text-sm font-semibold"></span>
+          <button onclick="nextMonth()" class="p-1.5 hover:bg-gray-100 rounded-lg transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+        <div class="grid grid-cols-7 gap-1 text-center text-xs text-gray-400 mb-2">
+          <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+        </div>
+        <div id="calGrid" class="grid grid-cols-7 gap-1 justify-items-center"></div>
+      </div>
+
+      <!-- Time slots -->
+      <div id="slotsSection" class="hidden">
+        <h3 class="text-sm font-semibold mb-3" id="slotsLabel"></h3>
+        <div id="slotGrid" class="grid grid-cols-4 gap-2"></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Your details -->
+    <div id="step3" class="step">
+      <button onclick="goStep(2)" class="flex items-center gap-1 text-sm text-gray-400 hover:text-gray-700 mb-6 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+
+      <div class="border border-gray-100 bg-gray-50 rounded-2xl p-4 mb-6">
+        <p class="text-sm font-medium" id="confirmSvcName"></p>
+        <p class="text-xs text-gray-400 mt-1" id="confirmDateTime"></p>
+      </div>
+
+      <h2 class="text-lg font-bold mb-4">Your details</h2>
+
+      <div id="bookingError" class="hidden mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Full name</label>
+          <input id="custName" type="text" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" placeholder="Your name">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+          <input id="custEmail" type="email" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" placeholder="your@email.com">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Phone <span class="text-gray-400 font-normal">(optional)</span></label>
+          <input id="custPhone" type="tel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" placeholder="+44 7700 000000">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Notes <span class="text-gray-400 font-normal">(optional)</span></label>
+          <textarea id="custNotes" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" placeholder="Anything we should know?"></textarea>
+        </div>
+        <button id="bookBtn" onclick="confirmBooking()" class="w-full bg-gray-900 text-white py-3.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition disabled:opacity-50">
+          Confirm Booking
+        </button>
+        <p class="text-xs text-center text-gray-400">You'll receive a confirmation email</p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-gray-100 py-6 mt-12 text-center">
+    <p class="text-xs text-gray-400">Powered by <a href="/" class="font-medium text-gray-600 hover:text-gray-900">Book-In</a></p>
+  </footer>
+
+  <script>
+    // Determine slug: from URL path /book/{slug} or subdomain
+    function getSlug() {
+      const path = window.location.pathname;
+      const match = path.match(/^\/book\/([^\/]+)/);
+      if (match) return match[1];
+      const host = window.location.hostname;
+      const parts = host.split('.');
+      if (parts.length >= 3) return parts[0];
+      return null;
+    }
+
+    const slug = getSlug();
+    if (!slug) document.getElementById('bizName').textContent = 'Business not found';
+
+    let selectedService = null;
+    let selectedDate = null;
+    let selectedSlot = null;
+    let calYear, calMonth;
+
+    function goStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    async function init() {
+      const biz = await fetch(`/api/client/${slug}`).then(r => r.json());
+      document.title = `Book — ${biz.name}`;
+      document.getElementById('bizName').textContent = biz.name;
+      if (biz.address) {
+        const el = document.getElementById('bizAddress');
+        el.textContent = biz.address;
+        el.classList.remove('hidden');
+      }
+      if (biz.logo_url) {
+        const img = document.getElementById('bizLogo');
+        img.src = biz.logo_url;
+        img.classList.remove('hidden');
+      }
+      loadServices();
+    }
+
+    async function loadServices() {
+      const [cats, svcs] = await Promise.all([
+        fetch(`/api/client/${slug}/categories`).then(r => r.json()),
+        fetch(`/api/client/${slug}/services`).then(r => r.json()),
+      ]);
+
+      const container = document.getElementById('serviceList');
+      if (!svcs.length) {
+        container.innerHTML = '<p class="text-gray-400 text-sm">No services available</p>';
+        return;
+      }
+
+      const byCat = {};
+      svcs.forEach(s => {
+        const key = s.category_id || 0;
+        if (!byCat[key]) byCat[key] = [];
+        byCat[key].push(s);
+      });
+
+      let html = '';
+      Object.entries(byCat).forEach(([catId, services]) => {
+        const cat = cats.find(c => c.id == catId);
+        if (cat) html += `<h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4">${cat.name}</h3>`;
+        services.forEach(s => {
+          html += `
+            <button onclick="selectService(${JSON.stringify(s).replace(/"/g, '&quot;')})"
+              class="w-full text-left border border-gray-200 rounded-2xl p-4 hover:border-gray-900 hover:bg-gray-50 transition group">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-sm group-hover:text-gray-900">${s.name}</p>
+                  ${s.description ? `<p class="text-xs text-gray-400 mt-0.5">${s.description}</p>` : ''}
+                </div>
+                <div class="text-right flex-shrink-0 ml-4">
+                  <p class="font-semibold text-sm">£${parseFloat(s.price).toFixed(2)}</p>
+                  <p class="text-xs text-gray-400">${s.duration_minutes} mins</p>
+                </div>
+              </div>
+            </button>`;
+        });
+      });
+      container.innerHTML = html;
+    }
+
+    function selectService(svc) {
+      selectedService = svc;
+      document.getElementById('selSvcName').textContent = svc.name;
+      document.getElementById('selSvcMeta').textContent = `£${parseFloat(svc.price).toFixed(2)} · ${svc.duration_minutes} mins`;
+
+      const now = new Date();
+      calYear = now.getFullYear();
+      calMonth = now.getMonth();
+      renderCalendar();
+      goStep(2);
+    }
+
+    function renderCalendar() {
+      const d = new Date(calYear, calMonth, 1);
+      const monthName = d.toLocaleDateString('en-GB', {month:'long', year:'numeric'});
+      document.getElementById('calMonthLabel').textContent = monthName;
+
+      const startDay = (d.getDay() + 6) % 7;
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      let html = '';
+      for (let i = 0; i < startDay; i++) html += '<div></div>';
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(calYear, calMonth, day);
+        const isPast = date < today;
+        const isSelected = selectedDate &&
+          selectedDate.getDate() === day &&
+          selectedDate.getMonth() === calMonth &&
+          selectedDate.getFullYear() === calYear;
+        const isToday = date.toDateString() === today.toDateString();
+
+        html += `<div class="cal-day ${isPast ? 'disabled' : ''} ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''}"
+          onclick="${isPast ? '' : `selectDate(${calYear},${calMonth},${day})`}">${day}</div>`;
+      }
+      document.getElementById('calGrid').innerHTML = html;
+    }
+
+    function prevMonth() {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    }
+
+    async function selectDate(y, m, d) {
+      selectedDate = new Date(y, m, d);
+      selectedSlot = null;
+      renderCalendar();
+
+      const dateStr = selectedDate.toISOString().split('T')[0];
+      const slots = await fetch(`/api/slots/client/${slug}/${selectedService.id}?date=${dateStr}`).then(r => r.json());
+
+      const label = selectedDate.toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long'});
+      document.getElementById('slotsLabel').textContent = label;
+
+      const grid = document.getElementById('slotGrid');
+      if (!slots.length) {
+        grid.innerHTML = '<p class="col-span-4 text-sm text-gray-400">No available slots for this day.</p>';
+      } else {
+        grid.innerHTML = slots.map(s =>
+          `<button class="slot-btn" onclick="selectSlot(this, '${s.datetime}', '${s.time}')">${s.time}</button>`
+        ).join('');
+      }
+      document.getElementById('slotsSection').classList.remove('hidden');
+    }
+
+    function selectSlot(btn, datetime, time) {
+      selectedSlot = datetime;
+      document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+
+      const dateLabel = selectedDate.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'});
+      document.getElementById('confirmSvcName').textContent = selectedService.name;
+      document.getElementById('confirmDateTime').textContent = `${dateLabel} at ${time} · £${parseFloat(selectedService.price).toFixed(2)}`;
+
+      setTimeout(() => goStep(3), 200);
+    }
+
+    async function confirmBooking() {
+      const name = document.getElementById('custName').value.trim();
+      const email = document.getElementById('custEmail').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const notes = document.getElementById('custNotes').value.trim();
+      const errEl = document.getElementById('bookingError');
+
+      if (!name || !email || !selectedSlot) {
+        errEl.textContent = 'Please fill in your name, email and select a time slot.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('bookBtn');
+      btn.disabled = true;
+      btn.textContent = 'Booking…';
+      errEl.classList.add('hidden');
+
+      try {
+        const res = await fetch(`/api/client/${slug}/book`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            customer_name: name,
+            customer_email: email,
+            customer_phone: phone || null,
+            service_id: selectedService.id,
+            start_time: selectedSlot,
+            notes: notes || null,
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Booking failed');
+
+        // Redirect to confirmation
+        const params = new URLSearchParams({
+          name, email,
+          service: selectedService.name,
+          time: selectedSlot,
+          slug,
+        });
+        window.location.href = `/book/${slug}/confirmation?${params}`;
+      } catch(ex) {
+        errEl.textContent = ex.message;
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Confirm Booking';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
