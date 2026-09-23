@@ -36,6 +36,10 @@ def update_notifications(
     business.email_confirmations = body.email_confirmations
     business.email_reminders = body.email_reminders
     business.sms_reminders = body.sms_reminders
+    business.whatsapp_reminders = body.whatsapp_reminders
+    business.sms_confirmations = body.sms_confirmations
+    business.whatsapp_confirmations = body.whatsapp_confirmations
+    business.reminder_2h = body.reminder_2h
     db.commit()
     db.refresh(business)
     return business

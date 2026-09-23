@@ -7,14 +7,28 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..dependencies import get_current_business, get_client_business
-from ..models import Booking, Business, Service
+from ..models import Booking, Business, BusinessHours, Service, StaffHours
 from ..schemas import SlotResponse
 
 router = APIRouter(prefix="/api/slots", tags=["slots"])
 
-BUSINESS_START_HOUR = 9
-BUSINESS_END_HOUR = 18
 SLOT_INTERVAL_MINUTES = 15
+
+
+def _get_hours(business_id: int, day_of_week: int, db: Session, staff_id: int = None):
+    if staff_id:
+        row = db.query(StaffHours).filter(
+            StaffHours.staff_id == staff_id,
+            StaffHours.day_of_week == day_of_week,
+        ).first()
+    else:
+        row = db.query(BusinessHours).filter(
+            BusinessHours.business_id == business_id,
+            BusinessHours.day_of_week == day_of_week,
+        ).first()
+    if not row:
+        return True, "09:00", "18:00"
+    return row.is_open, row.open_time, row.close_time
 
 
 def _generate_slots(
@@ -22,28 +36,39 @@ def _generate_slots(
     duration: int,
     business: Business,
     db: Session,
+    staff_id: int = None,
 ) -> List[dict]:
     tz = pytz.timezone(business.timezone or "Europe/London")
+    dow = target_date.weekday()
+
+    is_open, open_time, close_time = _get_hours(business.id, dow, db, staff_id)
+    if not is_open:
+        return []
+
+    open_h, open_m = map(int, open_time.split(":"))
+    close_h, close_m = map(int, close_time.split(":"))
 
     day_start = tz.localize(
-        datetime(target_date.year, target_date.month, target_date.day, BUSINESS_START_HOUR, 0)
+        datetime(target_date.year, target_date.month, target_date.day, open_h, open_m)
     )
     day_end = tz.localize(
-        datetime(target_date.year, target_date.month, target_date.day, BUSINESS_END_HOUR, 0)
+        datetime(target_date.year, target_date.month, target_date.day, close_h, close_m)
     )
 
     # Fetch confirmed bookings for that day (UTC range)
     utc_start = day_start.astimezone(pytz.utc).replace(tzinfo=None)
     utc_end = day_end.astimezone(pytz.utc).replace(tzinfo=None)
 
+    q = db.query(Booking).filter(
+        Booking.business_id == business.id,
+        Booking.status != "cancelled",
+        Booking.start_time < utc_end,
+        Booking.end_time > utc_start,
+    )
+    if staff_id:
+        q = q.filter(Booking.staff_id == staff_id)
     existing = (
-        db.query(Booking)
-        .filter(
-            Booking.business_id == business.id,
-            Booking.status != "cancelled",
-            Booking.start_time < utc_end,
-            Booking.end_time > utc_start,
-        )
+        q
         .all()
     )
 
@@ -78,6 +103,7 @@ def client_slots(
     slug: str,
     service_id: int,
     date: str = Query(...),
+    staff_id: int = Query(None),
     db: Session = Depends(get_db),
 ):
     from ..models import Business as Biz
@@ -97,7 +123,7 @@ def client_slots(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format")
 
-    return _generate_slots(target, svc.duration_minutes, business, db)
+    return _generate_slots(target, svc.duration_minutes, business, db, staff_id)
 
 
 @router.get("/admin/{service_id}")

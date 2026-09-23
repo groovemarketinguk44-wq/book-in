@@ -5,7 +5,7 @@ from datetime import datetime
 
 from ..database import get_db
 from ..dependencies import get_current_business
-from ..models import Booking, Business, Service, Transaction
+from ..models import Booking, Business, Service, Staff, Transaction
 from ..schemas import BookingResponse, BookingUpdate, BookingWithService
 
 router = APIRouter(prefix="/api/bookings", tags=["bookings"])
@@ -36,6 +36,10 @@ def list_bookings(
             item.service_name = svc.name
             item.service_price = svc.price
             item.service_duration = svc.duration_minutes
+        if b.staff_id:
+            s = db.query(Staff).filter(Staff.id == b.staff_id).first()
+            if s:
+                item.staff_name = s.name
         result.append(item)
     return result
 

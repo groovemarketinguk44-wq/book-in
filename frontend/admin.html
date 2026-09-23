@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Book-In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .nav-link { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px; font-size:14px; font-weight:500; color:#9ca3af; transition:all .15s; cursor:pointer; }
+    .nav-link:hover, .nav-link.active { background:rgba(255,255,255,.08); color:#fff; }
+    .nav-link svg { width:18px; height:18px; flex-shrink:0; }
+    .status-active { background:#dcfce7; color:#15803d; }
+    .status-trial { background:#fef9c3; color:#854d0e; }
+    .status-cancelled { background:#fee2e2; color:#b91c1c; }
+    .status-expired { background:#f3f4f6; color:#6b7280; }
+    .status-past_due { background:#ffedd5; color:#c2410c; }
+    .plan-pro { background:#dbeafe; color:#1d4ed8; }
+    .plan-ultra { background:#ede9fe; color:#6d28d9; }
+    tr:hover td { background:#f9fafb; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen flex">
+
+  <!-- Sidebar -->
+  <aside class="w-60 bg-gray-900 flex flex-col min-h-screen fixed left-0 top-0 bottom-0 z-10">
+    <div class="px-5 py-6 border-b border-white/10">
+      <div class="flex items-center gap-2">
+        <span class="text-white font-bold text-lg">Book-In</span>
+        <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">Admin</span>
+      </div>
+      <p class="text-gray-400 text-xs mt-0.5">Platform dashboard</p>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-0.5">
+      <div class="nav-link active" onclick="showTab('overview')" id="nav-overview">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Overview
+      </div>
+      <div class="nav-link" onclick="showTab('clients')" id="nav-clients">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Clients
+      </div>
+    </nav>
+
+    <div class="px-3 pb-4">
+      <div class="nav-link" onclick="logout()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        Log out
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="ml-60 flex-1 p-8 min-h-screen">
+
+    <!-- Overview tab -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Overview</h1>
+        <span id="overviewDate" class="text-sm text-gray-400"></span>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Total clients</p>
+          <p id="st-total" class="text-3xl font-black">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-green-100 bg-green-50">
+          <p class="text-xs text-green-600 mb-1">Active subscriptions</p>
+          <p id="st-active" class="text-3xl font-black text-green-700">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-amber-100 bg-amber-50">
+          <p class="text-xs text-amber-600 mb-1">On free trial</p>
+          <p id="st-trial" class="text-3xl font-black text-amber-700">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-blue-100 bg-blue-50">
+          <p class="text-xs text-blue-600 mb-1">Monthly recurring</p>
+          <p id="st-mrr" class="text-3xl font-black text-blue-700">—</p>
+        </div>
+      </div>
+
+      <!-- Secondary stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Bookings (all time)</p>
+          <p id="st-bookings" class="text-2xl font-bold">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Bookings this month</p>
+          <p id="st-bookings-month" class="text-2xl font-bold">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">New signups this month</p>
+          <p id="st-signups" class="text-2xl font-bold">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-red-100">
+          <p class="text-xs text-red-500 mb-1">Trials expiring (3 days)</p>
+          <p id="st-expiring" class="text-2xl font-bold text-red-600">—</p>
+        </div>
+      </div>
+
+      <!-- Trials expiring soon -->
+      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <h3 class="font-semibold text-sm">Trials expiring soon</h3>
+          <button onclick="showTab('clients')" class="text-xs text-blue-600 hover:underline">View all clients →</button>
+        </div>
+        <div id="expiringBody">
+          <div class="px-6 py-6 text-center text-sm text-gray-400">Loading…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Clients tab -->
+    <div id="tab-clients" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Clients</h1>
+        <div class="flex items-center gap-3">
+          <input id="searchBox" type="text" placeholder="Search name or email…" oninput="filterClients()"
+            class="border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-56">
+          <select id="statusFilter" onchange="filterClients()"
+            class="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="trial">Trial</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div id="clientsCount" class="px-6 py-3 border-b border-gray-100 text-xs text-gray-400"></div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-100 text-xs text-gray-400 uppercase tracking-wide">
+                <th class="text-left px-6 py-3 font-semibold">Business</th>
+                <th class="text-left px-6 py-3 font-semibold">Plan</th>
+                <th class="text-left px-6 py-3 font-semibold">Status</th>
+                <th class="text-left px-6 py-3 font-semibold">Trial / Since</th>
+                <th class="text-right px-6 py-3 font-semibold">MRR</th>
+                <th class="text-right px-6 py-3 font-semibold">Bookings (mo)</th>
+                <th class="text-right px-6 py-3 font-semibold">Rev (mo)</th>
+                <th class="text-right px-6 py-3 font-semibold">SMS/WA</th>
+                <th class="text-left px-6 py-3 font-semibold">Joined</th>
+              </tr>
+            </thead>
+            <tbody id="clientsBody">
+              <tr><td colspan="9" class="px-6 py-8 text-center text-gray-400">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/login';
+
+    let allClients = [];
+
+    const api = async (path) => {
+      const r = await fetch(path, { headers: { Authorization: `Bearer ${token}` } });
+      if (r.status === 401 || r.status === 403) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
+      return r.json();
+    };
+
+    function showTab(name) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      document.getElementById('nav-' + name).classList.add('active');
+    }
+
+    function statusBadge(s) {
+      const cls = { active:'status-active', trial:'status-trial', cancelled:'status-cancelled', expired:'status-expired', past_due:'status-past_due' }[s] || 'status-expired';
+      return `<span class="text-xs font-semibold px-2 py-0.5 rounded-full ${cls}">${s}</span>`;
+    }
+
+    function planBadge(p) {
+      if (!p || p === 'pro') return `<span class="text-xs font-semibold px-2 py-0.5 rounded-full plan-pro">Pro</span>`;
+      return `<span class="text-xs font-semibold px-2 py-0.5 rounded-full plan-ultra">Ultra</span>`;
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function trialInfo(client) {
+      if (client.subscription_status === 'trial') {
+        if (client.trial_days_left === null) return '—';
+        if (client.trial_days_left <= 0) return '<span class="text-red-500 text-xs font-medium">Expired</span>';
+        const color = client.trial_days_left <= 3 ? 'text-red-500' : client.trial_days_left <= 7 ? 'text-amber-500' : 'text-gray-500';
+        return `<span class="text-xs ${color} font-medium">${client.trial_days_left}d left</span>`;
+      }
+      if (client.subscription_status === 'active') {
+        return `<span class="text-xs text-gray-400">Active</span>`;
+      }
+      return '—';
+    }
+
+    function renderClientsTable(clients) {
+      const tbody = document.getElementById('clientsBody');
+      document.getElementById('clientsCount').textContent = `${clients.length} client${clients.length !== 1 ? 's' : ''}`;
+
+      if (!clients.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="px-6 py-8 text-center text-gray-400">No clients found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = clients.map(c => `
+        <tr class="border-b border-gray-50 cursor-default">
+          <td class="px-6 py-4">
+            <p class="font-semibold text-gray-900">${c.name}</p>
+            <p class="text-xs text-gray-400">${c.email}</p>
+            <p class="text-xs text-gray-300 font-mono">${c.slug}</p>
+          </td>
+          <td class="px-6 py-4">${planBadge(c.plan)}</td>
+          <td class="px-6 py-4">${statusBadge(c.subscription_status)}</td>
+          <td class="px-6 py-4">${trialInfo(c)}</td>
+          <td class="px-6 py-4 text-right font-semibold">${c.mrr ? '£' + c.mrr.toFixed(2) : '<span class="text-gray-300">—</span>'}</td>
+          <td class="px-6 py-4 text-right">${c.bookings_month}</td>
+          <td class="px-6 py-4 text-right">${c.revenue_month > 0 ? '£' + c.revenue_month.toFixed(2) : '<span class="text-gray-300">—</span>'}</td>
+          <td class="px-6 py-4 text-right text-xs text-gray-500">${c.sms_month} SMS / ${c.wa_month} WA</td>
+          <td class="px-6 py-4 text-xs text-gray-400">${fmtDate(c.created_at)}</td>
+        </tr>`).join('');
+    }
+
+    function filterClients() {
+      const q = document.getElementById('searchBox').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const filtered = allClients.filter(c => {
+        const matchQ = !q || c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q);
+        const matchS = !status || c.subscription_status === status;
+        return matchQ && matchS;
+      });
+      renderClientsTable(filtered);
+    }
+
+    function renderExpiringTable(clients) {
+      const expiring = clients
+        .filter(c => c.subscription_status === 'trial' && c.trial_days_left !== null && c.trial_days_left <= 7)
+        .sort((a, b) => a.trial_days_left - b.trial_days_left);
+
+      const el = document.getElementById('expiringBody');
+      if (!expiring.length) {
+        el.innerHTML = '<div class="px-6 py-6 text-center text-sm text-gray-400">No trials expiring in the next 7 days.</div>';
+        return;
+      }
+      el.innerHTML = expiring.map(c => `
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+          <div>
+            <p class="font-semibold text-sm text-gray-900">${c.name}</p>
+            <p class="text-xs text-gray-400">${c.email}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            ${planBadge(c.plan)}
+            <span class="text-xs font-semibold ${c.trial_days_left <= 2 ? 'text-red-500' : 'text-amber-500'}">
+              ${c.trial_days_left === 0 ? 'Expires today' : c.trial_days_left + 'd left'}
+            </span>
+          </div>
+        </div>`).join('');
+    }
+
+    async function init() {
+      document.getElementById('overviewDate').textContent =
+        new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+      const [stats, clients] = await Promise.all([
+        api('/api/admin/stats'),
+        api('/api/admin/businesses'),
+      ]);
+
+      // Stats
+      document.getElementById('st-total').textContent = stats.total_clients;
+      document.getElementById('st-active').textContent = stats.active;
+      document.getElementById('st-trial').textContent = stats.trial;
+      document.getElementById('st-mrr').textContent = '£' + stats.mrr.toFixed(2);
+      document.getElementById('st-bookings').textContent = stats.total_bookings.toLocaleString();
+      document.getElementById('st-bookings-month').textContent = stats.bookings_month.toLocaleString();
+      document.getElementById('st-signups').textContent = stats.signups_month;
+      document.getElementById('st-expiring').textContent = stats.expiring_soon;
+
+      allClients = clients;
+      renderExpiringTable(clients);
+      renderClientsTable(clients);
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -13,6 +13,10 @@
     .nav-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:500;color:#9ca3af;transition:all .15s;cursor:pointer;}
     .nav-link:hover,.nav-link.active{background:rgba(255,255,255,.08);color:#fff;}
     .nav-link svg{width:18px;height:18px;flex-shrink:0;}
+    .auto-tab-btn{color:#6b7280;background:transparent;}
+    .auto-tab-btn.active{background:#fff;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+    .auto-panel{display:block;}
+    .auto-panel.hidden{display:none;}
   </style>
 </head>
 <body class="bg-gray-100 text-gray-900 min-h-screen flex">
@@ -25,21 +29,29 @@
     </div>
 
     <nav class="flex-1 px-3 py-4 space-y-0.5">
-      <div class="nav-link active" onclick="showTab('services')" id="nav-services">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-        Services
-      </div>
-      <div class="nav-link" onclick="showTab('bookings')" id="nav-bookings">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        Bookings
+      <div class="nav-link active" onclick="showTab('dashboard')" id="nav-dashboard">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Dashboard
       </div>
       <div class="nav-link" onclick="showTab('calendar')" id="nav-calendar">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
         Calendar
       </div>
-      <div class="nav-link" onclick="showTab('financials')" id="nav-financials">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        Financials
+      <div class="nav-link" onclick="showTab('bookings')" id="nav-bookings">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Bookings
+      </div>
+      <div class="nav-link" onclick="showTab('staff')" id="nav-staff">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Staff
+      </div>
+      <div class="nav-link" onclick="showTab('automations')" id="nav-automations">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        Automations
+      </div>
+      <div class="nav-link" onclick="showTab('usage')" id="nav-usage">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 11h.01M12 11h.01M15 11h.01M12 7h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        Usage
       </div>
       <div class="nav-link" onclick="showTab('settings')" id="nav-settings">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -48,6 +60,10 @@
     </nav>
 
     <div class="px-3 pb-4 space-y-0.5">
+      <div class="nav-link" onclick="showTab('services')" id="nav-services" style="opacity:.65;font-size:12px;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Services
+      </div>
       <div id="bookingPageLink" class="nav-link text-xs">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
         Booking page
@@ -63,7 +79,7 @@
   <main class="ml-60 flex-1 p-8 min-h-screen">
 
     <!-- Services tab -->
-    <div id="tab-services" class="tab-content active">
+    <div id="tab-services" class="tab-content">
       <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold">Services & Categories</h1>
         <div class="flex gap-2">
@@ -106,38 +122,211 @@
       <div id="calGrid" class="bg-white rounded-2xl border border-gray-200 overflow-hidden"></div>
     </div>
 
-    <!-- Financials tab -->
-    <div id="tab-financials" class="tab-content">
+    <!-- Dashboard tab -->
+    <div id="tab-dashboard" class="tab-content active">
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold">Financials</h1>
-        <select id="financialsPeriod" onchange="loadFinancials()" class="border border-gray-200 rounded-xl px-3 py-2 text-sm">
-          <option value="this_week">This week</option>
-          <option value="last_week">Last week</option>
-          <option value="this_month" selected>This month</option>
-        </select>
+        <h1 class="text-2xl font-bold">Dashboard</h1>
+        <span id="dashMonth" class="text-sm text-gray-400"></span>
       </div>
 
+      <!-- Booking stats cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Bookings this month</p>
+          <p id="db-total" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Completed</p>
+          <p id="db-completed" class="text-2xl font-bold text-green-600">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Cancelled</p>
+          <p id="db-cancelled" class="text-2xl font-bold text-red-500">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-blue-100 bg-blue-50">
+          <p class="text-xs text-blue-600 mb-1">Revenue this month</p>
+          <p id="db-revenue" class="text-2xl font-bold text-blue-700">£0</p>
+        </div>
+      </div>
+
+      <!-- Revenue charts row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <p class="text-sm font-semibold text-gray-700 mb-4">Revenue this week</p>
+          <canvas id="weeklyRevenueChart" height="140"></canvas>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <p class="text-sm font-semibold text-gray-700 mb-4">12-week trend</p>
+          <canvas id="trendChart" height="140"></canvas>
+        </div>
+      </div>
+
+      <!-- Staff revenue + sources row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <p class="text-sm font-semibold text-gray-700 mb-4">Staff revenue — last 30 days</p>
+          <div id="staffChartWrap"><canvas id="staffRevenueChart" height="140"></canvas></div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <p class="text-sm font-semibold text-gray-700 mb-1">Customer sources</p>
+          <p class="text-xs text-gray-400 mb-4">Add <code class="bg-gray-100 px-1 rounded">?src=instagram</code> (or facebook, google, tiktok…) to your booking link to track where customers come from</p>
+          <div id="sourcesChartWrap"><canvas id="sourcesChart" height="140"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Staff tab -->
+    <div id="tab-staff" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Staff</h1>
+        <button onclick="openStaffModal()" class="bg-gray-900 text-white text-sm px-4 py-2 rounded-xl hover:bg-gray-700 transition font-medium">+ Add staff</button>
+      </div>
+      <div id="staffList" class="grid grid-cols-1 gap-4 max-w-2xl"></div>
+    </div>
+
+    <!-- Usage tab -->
+    <div id="tab-usage" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Usage &amp; Billing</h1>
+        <span id="usageMonth" class="text-sm text-gray-400"></span>
+      </div>
+
+      <!-- Cost cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div class="bg-white rounded-2xl border border-gray-200 p-5">
-          <p class="text-xs text-gray-500 mb-1">Today</p>
-          <p id="stat-daily" class="text-2xl font-bold">£0</p>
+          <p class="text-xs text-gray-500 mb-1">Base plan</p>
+          <p class="text-2xl font-bold">£9.99</p>
+          <p class="text-xs text-gray-400 mt-1">per month</p>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 p-5">
-          <p class="text-xs text-gray-500 mb-1">This week</p>
-          <p id="stat-weekly" class="text-2xl font-bold">£0</p>
+          <p class="text-xs text-gray-500 mb-1">WhatsApp sent</p>
+          <p id="usage-wa-count" class="text-2xl font-bold">0</p>
+          <p id="usage-wa-cost" class="text-xs text-gray-400 mt-1">£0.00 (£0.05 each)</p>
         </div>
         <div class="bg-white rounded-2xl border border-gray-200 p-5">
-          <p class="text-xs text-gray-500 mb-1">This month</p>
-          <p id="stat-monthly" class="text-2xl font-bold">£0</p>
+          <p class="text-xs text-gray-500 mb-1">SMS sent</p>
+          <p id="usage-sms-count" class="text-2xl font-bold">0</p>
+          <p id="usage-sms-cost" class="text-xs text-gray-400 mt-1">£0.00 (£0.10 each)</p>
         </div>
-        <div class="bg-white rounded-2xl border border-gray-200 p-5">
-          <p class="text-xs text-gray-500 mb-1">Avg booking</p>
-          <p id="stat-avg" class="text-2xl font-bold">£0</p>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-blue-200 bg-blue-50">
+          <p class="text-xs text-blue-600 mb-1">Estimated bill</p>
+          <p id="usage-total" class="text-2xl font-bold text-blue-700">£9.99</p>
+          <p class="text-xs text-blue-400 mt-1">this month</p>
         </div>
       </div>
 
-      <div class="bg-white rounded-2xl border border-gray-200 p-6">
-        <canvas id="revenueChart" height="80"></canvas>
+      <!-- Email stat -->
+      <div class="bg-white rounded-2xl border border-gray-200 p-5 mb-6 flex items-center justify-between">
+        <div>
+          <p class="font-medium text-sm">Email reminders &amp; confirmations</p>
+          <p class="text-xs text-gray-400 mt-0.5">Unlimited — included in base plan</p>
+        </div>
+        <p id="usage-email-count" class="text-2xl font-bold text-gray-700">0</p>
+      </div>
+
+      <!-- Message log -->
+      <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+          <h3 class="font-semibold text-sm">Recent messages</h3>
+        </div>
+        <div id="usageLogBody">
+          <div class="px-6 py-8 text-center text-sm text-gray-400">No messages sent yet this month.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Automations tab -->
+    <div id="tab-automations" class="tab-content">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Automations</h1>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="autoStatsGrid">
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Missed calls (month)</p>
+          <p id="auto-missed" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Recovery links sent</p>
+          <p id="auto-recovery" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Recovered bookings</p>
+          <p id="auto-recovered" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Review requests sent</p>
+          <p id="auto-reviews" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Pending callbacks</p>
+          <p id="auto-callbacks" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5">
+          <p class="text-xs text-gray-500 mb-1">Voicemails</p>
+          <p id="auto-voicemails" class="text-2xl font-bold">0</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 border-red-100">
+          <p class="text-xs text-red-500 mb-1">Failed messages</p>
+          <p id="auto-failed" class="text-2xl font-bold text-red-600">0</p>
+        </div>
+      </div>
+
+      <!-- Sub-tabs -->
+      <div class="flex gap-1 bg-gray-100 rounded-xl p-1 mb-6 w-fit">
+        <button onclick="showAutoTab('missed')" id="atab-missed" class="auto-tab-btn active px-4 py-2 rounded-lg text-sm font-medium transition">Missed Calls</button>
+        <button onclick="showAutoTab('reviews')" id="atab-reviews" class="auto-tab-btn px-4 py-2 rounded-lg text-sm font-medium transition">Reviews</button>
+        <button onclick="showAutoTab('callbacks')" id="atab-callbacks" class="auto-tab-btn px-4 py-2 rounded-lg text-sm font-medium transition">Callbacks</button>
+        <button onclick="showAutoTab('voicemails')" id="atab-voicemails" class="auto-tab-btn px-4 py-2 rounded-lg text-sm font-medium transition">Voicemails</button>
+      </div>
+
+      <!-- Missed Calls panel -->
+      <div id="autopanel-missed" class="auto-panel">
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="font-semibold text-sm">Missed Calls</h3>
+          </div>
+          <div id="missedCallsBody">
+            <div class="px-6 py-8 text-center text-sm text-gray-400">No missed calls recorded yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews panel -->
+      <div id="autopanel-reviews" class="auto-panel hidden">
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-sm">Review Requests</h3>
+          </div>
+          <div id="reviewRequestsBody">
+            <div class="px-6 py-8 text-center text-sm text-gray-400">No review requests sent yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Callbacks panel -->
+      <div id="autopanel-callbacks" class="auto-panel hidden">
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-sm">Callback Requests</h3>
+          </div>
+          <div id="callbacksBody">
+            <div class="px-6 py-8 text-center text-sm text-gray-400">No callback requests yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Voicemails panel -->
+      <div id="autopanel-voicemails" class="auto-panel hidden">
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-sm">Voicemails</h3>
+          </div>
+          <div id="voicemailsBody">
+            <div class="px-6 py-8 text-center text-sm text-gray-400">No voicemails yet.</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -224,70 +413,250 @@
           </div>
         </div>
 
+        <!-- Opening Hours -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="font-semibold mb-4">Opening Hours</h3>
+          <div class="space-y-2" id="hoursGrid"></div>
+          <button onclick="saveHours()" class="mt-4 bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">Save hours</button>
+        </div>
+
         <!-- Notifications -->
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 class="font-semibold mb-4">Notifications</h3>
-          <div class="space-y-4">
+          <h3 class="font-semibold mb-1">Notifications</h3>
+          <p class="text-xs text-gray-500 mb-4">All messages sent from Book-In on your behalf</p>
+          <div class="space-y-1 mb-4">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Confirmations (on booking)</p>
+          </div>
+          <div class="space-y-4 mb-5">
             <label class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium">Email confirmations</p>
-                <p class="text-xs text-gray-500">Send booking confirmation emails to clients</p>
+                <p class="text-xs text-gray-500">Confirmation email when a client books</p>
               </div>
               <input id="notif_email_conf" type="checkbox" class="w-4 h-4 accent-blue-600">
             </label>
             <label class="flex items-center justify-between">
               <div>
+                <p class="text-sm font-medium">SMS confirmations
+                  <span id="sms_conf_badge" class="hidden ml-2 text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded-full">Paid · £0.10</span>
+                </p>
+                <p class="text-xs text-gray-500">Text message when a client books (paid plan)</p>
+              </div>
+              <input id="notif_sms_conf" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+            <label class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium">WhatsApp confirmations
+                  <span id="wa_conf_badge" class="hidden ml-2 text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded-full">Paid · £0.05</span>
+                </p>
+                <p class="text-xs text-gray-500">WhatsApp message when a client books (paid plan)</p>
+              </div>
+              <input id="notif_wa_conf" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+          </div>
+          <div class="space-y-1 mb-4">
+            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">Reminders</p>
+          </div>
+          <div class="space-y-4">
+            <label class="flex items-center justify-between">
+              <div>
                 <p class="text-sm font-medium">Email reminders</p>
-                <p class="text-xs text-gray-500">Send 24h reminder emails to clients</p>
+                <p class="text-xs text-gray-500">24h reminder email before the appointment</p>
               </div>
               <input id="notif_email_rem" type="checkbox" class="w-4 h-4 accent-blue-600">
             </label>
             <label class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium">SMS reminders</p>
-                <p class="text-xs text-gray-500">Send 24h reminder texts via Twilio</p>
+                <p class="text-sm font-medium">2h reminders</p>
+                <p class="text-xs text-gray-500">Also send all enabled reminders 2 hours before</p>
+              </div>
+              <input id="notif_2h" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+            <label class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium">SMS reminders
+                  <span id="sms_pro_badge" class="hidden ml-2 text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded-full">Paid · £0.10</span>
+                </p>
+                <p class="text-xs text-gray-500">24h reminder text (client must provide phone)</p>
               </div>
               <input id="notif_sms" type="checkbox" class="w-4 h-4 accent-blue-600">
+            </label>
+            <label class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium">WhatsApp reminders
+                  <span id="whatsapp_pro_badge" class="hidden ml-2 text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded-full">Paid · £0.05</span>
+                </p>
+                <p class="text-xs text-gray-500">24h WhatsApp reminder (client must provide phone)</p>
+              </div>
+              <input id="notif_whatsapp" type="checkbox" class="w-4 h-4 accent-blue-600">
             </label>
             <button onclick="saveNotifications()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">Save</button>
           </div>
         </div>
 
-        <!-- Email account -->
+        <!-- Booking & Review Links -->
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 class="font-semibold mb-1">Connected Email</h3>
-          <p class="text-sm text-gray-500 mb-4">Emails will be sent from your own email account</p>
-          <div id="emailAccountStatus" class="mb-4"></div>
-          <div class="flex gap-2">
-            <a id="gmailBtn" href="/api/email/google/connect" class="flex items-center gap-2 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition">
-              <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#EA4335" d="M5.27 9.76C6.19 7.1 8.7 5.2 11.6 5.2c1.68 0 3.19.58 4.37 1.56l3.27-3.27C17.29 1.67 14.63.6 11.6.6 6.92.6 2.9 3.5 1.18 7.7l4.09 2.06z"/><path fill="#34A853" d="M15.76 18.13c-1.1.7-2.5 1.07-4.16 1.07-2.88 0-5.37-1.88-6.3-4.52L1.19 16.8C2.91 21.02 6.94 23.9 11.6 23.9c2.93 0 5.57-.99 7.6-2.74l-3.44-3.03z"/><path fill="#4A90D9" d="M19.2 21.16c2.14-2.01 3.4-5.04 3.4-8.76 0-.74-.1-1.54-.26-2.28H11.6v4.82h6.26c-.3 1.52-1.14 2.75-2.34 3.62l3.68 2.6z"/><path fill="#FBBC05" d="M5.3 14.68c-.25-.72-.38-1.49-.38-2.28s.13-1.56.37-2.28L1.2 7.94A11.28 11.28 0 000 12.4c0 1.56.3 3.04.84 4.4l4.46-2.12z"/></svg>
-              Connect Gmail
-            </a>
-            <a id="outlookBtn" href="/api/email/microsoft/connect" class="flex items-center gap-2 border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-gray-50 transition">
-              <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#0078D4" d="M2 4l10 2v12L2 20V4zm11 2h7a1 1 0 011 1v10a1 1 0 01-1 1h-7V6z"/></svg>
-              Connect Outlook
-            </a>
-            <button id="disconnectEmailBtn" onclick="disconnectEmail()" class="hidden text-sm text-red-600 px-3 py-2 rounded-xl hover:bg-red-50 transition">Disconnect</button>
+          <h3 class="font-semibold mb-1">Links</h3>
+          <p class="text-xs text-gray-500 mb-4">Your booking link is auto-generated. Paste your Google review link to enable review requests.</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Booking link</label>
+              <div class="flex items-center gap-2">
+                <input id="set_booking_link" type="text" readonly class="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm bg-gray-50 focus:outline-none select-all">
+                <button onclick="copyBookingLink()" class="border border-gray-200 px-3 py-2.5 rounded-xl text-sm hover:bg-gray-50 transition font-medium">Copy</button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Google review link</label>
+              <input id="set_google_review_link" type="url" placeholder="https://g.page/r/..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Call tracking number <span class="text-gray-400 font-normal">(optional)</span></label>
+              <input id="set_tracking_phone" type="tel" placeholder="+44..." class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <p class="text-xs text-gray-400 mt-1">Your Twilio number — calls to this number trigger the AI receptionist and missed call recovery.</p>
+            </div>
+            <button onclick="saveLinks()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">Save links</button>
           </div>
         </div>
 
+        <!-- Missed Call Recovery -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-semibold">Missed Call Recovery</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Auto-send a booking link when someone calls and you miss it</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="auto_missed_call" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-200 peer-checked:bg-gray-900 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition peer-checked:after:translate-x-4"></div>
+            </label>
+          </div>
+          <div class="space-y-3">
+            <label class="block text-sm font-medium text-gray-700">Message template</label>
+            <p class="text-xs text-gray-400">Merge fields: <code class="bg-gray-100 px-1 rounded">{{salon_name}}</code> <code class="bg-gray-100 px-1 rounded">{{booking_link}}</code> <code class="bg-gray-100 px-1 rounded">{{phone_number}}</code></p>
+            <textarea id="auto_missed_call_msg" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+        </div>
+
+        <!-- Follow-Up Messages -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-semibold">Smart Follow-Up</h3>
+              <p class="text-xs text-gray-500 mt-0.5">If a missed caller doesn't book within 24h, send one follow-up (max 1 per caller)</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="auto_followup" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-200 peer-checked:bg-gray-900 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition peer-checked:after:translate-x-4"></div>
+            </label>
+          </div>
+          <div class="space-y-3">
+            <label class="block text-sm font-medium text-gray-700">Follow-up message</label>
+            <p class="text-xs text-gray-400">Merge fields: <code class="bg-gray-100 px-1 rounded">{{salon_name}}</code> <code class="bg-gray-100 px-1 rounded">{{booking_link}}</code></p>
+            <textarea id="auto_followup_msg" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+        </div>
+
+        <!-- Review Requests -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-semibold">Review Requests</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Auto-send a review request after a completed appointment</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="auto_reviews" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-200 peer-checked:bg-gray-900 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition peer-checked:after:translate-x-4"></div>
+            </label>
+          </div>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Send via</label>
+              <select id="auto_review_channel" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="whatsapp">WhatsApp</option>
+                <option value="sms">SMS</option>
+              </select>
+            </div>
+            <label class="block text-sm font-medium text-gray-700">Review request message</label>
+            <p class="text-xs text-gray-400">Merge fields: <code class="bg-gray-100 px-1 rounded">{{salon_name}}</code> <code class="bg-gray-100 px-1 rounded">{{google_review_link}}</code> <code class="bg-gray-100 px-1 rounded">{{customer_name}}</code></p>
+            <textarea id="auto_review_msg" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          </div>
+        </div>
+
+        <!-- WhatsApp Reminder Template -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <h3 class="font-semibold mb-1">WhatsApp Reminder Template</h3>
+          <p class="text-xs text-gray-500 mb-4">Customise the message sent to clients before their appointment</p>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Timing</label>
+              <select id="auto_reminder_timing" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="24">24 hours before</option>
+                <option value="48">48 hours before</option>
+                <option value="6">6 hours before</option>
+                <option value="12">12 hours before</option>
+              </select>
+            </div>
+            <label class="block text-sm font-medium text-gray-700">Message template</label>
+            <p class="text-xs text-gray-400">Merge fields: <code class="bg-gray-100 px-1 rounded">{{customer_name}}</code> <code class="bg-gray-100 px-1 rounded">{{service_name}}</code> <code class="bg-gray-100 px-1 rounded">{{salon_name}}</code> <code class="bg-gray-100 px-1 rounded">{{timing}}</code> <code class="bg-gray-100 px-1 rounded">{{time}}</code> <code class="bg-gray-100 px-1 rounded">{{date}}</code></p>
+            <textarea id="auto_wa_template" rows="4" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"></textarea>
+          </div>
+        </div>
+
+        <!-- Smart Receptionist -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-semibold">Smart Receptionist</h3>
+              <p class="text-xs text-gray-500 mt-0.5">Answer missed calls with a voice menu — book, voicemail, or callback</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="auto_receptionist" class="sr-only peer">
+              <div class="w-9 h-5 bg-gray-200 peer-checked:bg-gray-900 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition peer-checked:after:translate-x-4"></div>
+            </label>
+          </div>
+          <div class="space-y-3">
+            <label class="block text-sm font-medium text-gray-700">Greeting</label>
+            <p class="text-xs text-gray-400">What callers hear. Keep it short and clear.</p>
+            <textarea id="auto_greeting" rows="3" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-xs text-blue-700 space-y-1">
+              <p class="font-semibold">How it works:</p>
+              <p>Press 1 → Sends caller a booking link by SMS/WhatsApp</p>
+              <p>Press 2 → Caller leaves a voicemail (saved to your dashboard)</p>
+              <p>Press 3 → Creates a callback request in your dashboard</p>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="saveAutomationSettings()" class="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-700 transition">Save automation settings</button>
+
         <!-- Billing -->
         <div class="bg-white rounded-2xl border border-gray-200 p-6">
-          <h3 class="font-semibold mb-1">Billing</h3>
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm" id="subStatus">Loading…</p>
-              <p class="text-xs text-gray-500 mt-0.5">£9.99/month after trial</p>
-            </div>
-            <button onclick="startCheckout()" id="checkoutBtn" class="hidden bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-blue-500 transition">
-              Upgrade
-            </button>
-          </div>
+          <h3 class="font-semibold mb-4">Billing</h3>
+          <div id="billingContent"></div>
         </div>
       </div>
     </div>
 
   </main>
+
+  <!-- Subscription banner -->
+  <div id="subBanner" class="hidden fixed bottom-0 left-60 right-0 z-20 bg-gray-900 text-white px-6 py-4">
+    <div class="flex items-center justify-between max-w-4xl mx-auto gap-4">
+      <div class="min-w-0">
+        <p id="subBannerTitle" class="font-semibold text-sm"></p>
+        <p id="subBannerSub" class="text-gray-400 text-xs mt-0.5"></p>
+      </div>
+      <div class="flex gap-2 flex-shrink-0">
+        <button onclick="startCheckout('pro')" class="bg-white text-gray-900 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-100 transition">
+          Pro — £14.99/month
+        </button>
+        <button onclick="startCheckout('ultra')" class="bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-400 transition">
+          Ultra — £39.99/month
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Category Modal -->
   <div id="categoryModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -354,14 +723,68 @@
     </div>
   </div>
 
+  <!-- Staff Modal -->
+  <div id="staffModal" class="hidden fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl my-8">
+      <h3 class="font-bold mb-5" id="staffModalTitle">Add staff member</h3>
+
+      <!-- Info -->
+      <div class="space-y-3 mb-6">
+        <div class="flex gap-3">
+          <div class="flex-1">
+            <label class="block text-xs font-medium text-gray-500 mb-1">Name</label>
+            <input id="staffName" type="text" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Sarah">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">Colour</label>
+            <input id="staffColor" type="color" value="#6366f1" class="w-12 h-10 rounded-xl border border-gray-200 cursor-pointer p-0.5 block">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">Email (optional)</label>
+            <input id="staffEmail" type="email" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">Phone (optional)</label>
+            <input id="staffPhone" type="tel" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div class="mb-6">
+        <p class="text-sm font-semibold mb-3">Schedule</p>
+        <div class="space-y-2" id="staffHoursGrid"></div>
+      </div>
+
+      <!-- Services -->
+      <div class="mb-6">
+        <p class="text-sm font-semibold mb-1">Services offered</p>
+        <p class="text-xs text-gray-400 mb-3">Leave all unticked = can do all services</p>
+        <div class="space-y-2" id="staffServicesGrid"></div>
+      </div>
+
+      <input type="hidden" id="staffId">
+      <div class="flex gap-2">
+        <button onclick="saveStaff()" class="flex-1 bg-gray-900 text-white py-2.5 rounded-xl text-sm font-semibold">Save</button>
+        <button onclick="closeStaffModal()" class="flex-1 border border-gray-200 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-50">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const token = localStorage.getItem('token');
     if (!token) window.location.href = '/login';
+    // Redirect platform admin away from the business dashboard
+    try {
+      const p = JSON.parse(atob(token.split('.')[1]));
+      if (p.is_platform_admin) window.location.href = '/admin';
+    } catch(e) {}
 
     let bizSlug = '';
     let categories = [];
-    let chart = null;
     let calWeekOffset = 0;
     let editCatId = null;
     let editSvcId = null;
@@ -378,21 +801,37 @@
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
       document.getElementById('tab-' + name).classList.add('active');
-      document.getElementById('nav-' + name).classList.add('active');
+      const navEl = document.getElementById('nav-' + name);
+      if (navEl) navEl.classList.add('active');
+      if (name === 'dashboard') loadDashboard();
       if (name === 'services') loadServices();
       if (name === 'bookings') loadBookings();
       if (name === 'calendar') loadCalendar();
-      if (name === 'financials') loadFinancials();
       if (name === 'settings') loadSettings();
+      if (name === 'staff') loadStaff();
+      if (name === 'usage') loadUsage();
+      if (name === 'automations') loadAutomations();
     }
 
     async function init() {
       const biz = await api('/api/settings');
       bizSlug = biz.slug || '';
+      _bizPlan = biz.plan || 'pro';
+      _bizStatus = biz.subscription_status || 'trial';
       document.getElementById('bizName').textContent = biz.name;
       const link = document.getElementById('bookingPageLink');
       link.onclick = () => window.open('/book/' + bizSlug, '_blank');
-      loadServices();
+
+      // Show plan badge in sidebar
+      if (biz.subscription_status === 'active') {
+        const badge = document.createElement('span');
+        badge.className = `ml-auto text-xs font-bold px-1.5 py-0.5 rounded ${_bizPlan === 'ultra' ? 'bg-indigo-500 text-white' : 'bg-blue-500 text-white'}`;
+        badge.textContent = (_bizPlan === 'ultra' ? 'Ultra' : 'Pro');
+        document.getElementById('bizName').parentNode.appendChild(badge);
+      }
+
+      showTab('dashboard');
+      renderSubBanner(biz);
     }
 
     // ── Image upload helpers ──────────────────────────────────────────────────
@@ -723,31 +1162,46 @@
       document.getElementById('calGrid').innerHTML = html;
     }
 
-    // ── Financials ────────────────────────────────────────────────────────────
+    // ── Dashboard ─────────────────────────────────────────────────────────────
 
-    async function loadFinancials() {
-      const period = document.getElementById('financialsPeriod').value;
-      const data = await api(`/api/financials?period=${period}`);
+    const _dashCharts = {};
 
-      document.getElementById('stat-daily').textContent = '£' + data.daily_revenue.toFixed(2);
-      document.getElementById('stat-weekly').textContent = '£' + data.weekly_revenue.toFixed(2);
-      document.getElementById('stat-monthly').textContent = '£' + data.monthly_revenue.toFixed(2);
-      document.getElementById('stat-avg').textContent = '£' + (data.avg_booking_value || 0).toFixed(2);
+    function _renderChart(id, config) {
+      if (_dashCharts[id]) { _dashCharts[id].destroy(); delete _dashCharts[id]; }
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      _dashCharts[id] = new Chart(canvas.getContext('2d'), config);
+    }
 
-      if (chart) chart.destroy();
-      const ctx = document.getElementById('revenueChart').getContext('2d');
-      chart = new Chart(ctx, {
-        type: 'line',
+    const SOURCE_COLORS = {
+      instagram: '#e1306c', facebook: '#1877f2', google: '#4285f4',
+      tiktok: '#2d3748', tiktok_dark: '#010101', direct: '#6b7280',
+      whatsapp: '#25d366', email: '#f59e0b', other: '#9ca3af',
+    };
+
+    async function loadDashboard() {
+      const now = new Date();
+      document.getElementById('dashMonth').textContent =
+        now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+
+      const data = await api('/api/financials/dashboard');
+      const stats = data.booking_stats;
+
+      document.getElementById('db-total').textContent = stats.total_month;
+      document.getElementById('db-completed').textContent = stats.completed_month;
+      document.getElementById('db-cancelled').textContent = stats.cancelled_month;
+      document.getElementById('db-revenue').textContent = '£' + stats.revenue_month.toFixed(2);
+
+      // Weekly revenue — bar chart
+      _renderChart('weeklyRevenueChart', {
+        type: 'bar',
         data: {
-          labels: data.chart_labels,
+          labels: data.weekly_revenue.labels,
           datasets: [{
-            label: 'Revenue (£)',
-            data: data.chart_data,
-            borderColor: '#2563eb',
-            backgroundColor: 'rgba(37,99,235,.08)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 3,
+            data: data.weekly_revenue.data,
+            backgroundColor: 'rgba(37,99,235,.75)',
+            borderRadius: 6,
+            borderSkipped: false,
           }]
         },
         options: {
@@ -755,16 +1209,107 @@
           plugins: { legend: { display: false } },
           scales: {
             y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { callback: v => '£' + v } },
-            x: { grid: { display: false } }
+            x: { grid: { display: false } },
           }
         }
       });
+
+      // 12-week trend — line chart
+      _renderChart('trendChart', {
+        type: 'line',
+        data: {
+          labels: data.weekly_trend.labels,
+          datasets: [{
+            data: data.weekly_trend.data,
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139,92,246,.08)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3,
+            pointBackgroundColor: '#8b5cf6',
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { callback: v => '£' + v } },
+            x: { grid: { display: false }, ticks: { maxTicksLimit: 6 } },
+          }
+        }
+      });
+
+      // Staff revenue — horizontal bar chart
+      const staffWrap = document.getElementById('staffChartWrap');
+      if (data.staff_revenue.length) {
+        staffWrap.innerHTML = '<canvas id="staffRevenueChart" height="140"></canvas>';
+        const staffColors = ['#6366f1','#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4'];
+        _renderChart('staffRevenueChart', {
+          type: 'bar',
+          data: {
+            labels: data.staff_revenue.map(s => s.name),
+            datasets: [{
+              data: data.staff_revenue.map(s => s.revenue),
+              backgroundColor: data.staff_revenue.map((_, i) => staffColors[i % staffColors.length]),
+              borderRadius: 6,
+              borderSkipped: false,
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { callback: v => '£' + v } },
+              y: { grid: { display: false } },
+            }
+          }
+        });
+      } else {
+        staffWrap.innerHTML = '<div class="py-10 text-center text-sm text-gray-400">No staff revenue data yet.<br><span class="text-xs">Assign staff to bookings to see splits here.</span></div>';
+      }
+
+      // Sources — doughnut chart
+      const srcWrap = document.getElementById('sourcesChartWrap');
+      const activeSources = data.sources.filter(s => s.count > 0);
+      if (activeSources.length) {
+        srcWrap.innerHTML = '<canvas id="sourcesChart" height="140"></canvas>';
+        _renderChart('sourcesChart', {
+          type: 'doughnut',
+          data: {
+            labels: activeSources.map(s => s.source.charAt(0).toUpperCase() + s.source.slice(1)),
+            datasets: [{
+              data: activeSources.map(s => s.count),
+              backgroundColor: activeSources.map(s => SOURCE_COLORS[s.source] || '#9ca3af'),
+              borderWidth: 0,
+              hoverOffset: 6,
+            }]
+          },
+          options: {
+            responsive: true,
+            cutout: '65%',
+            plugins: {
+              legend: { position: 'bottom', labels: { padding: 14, font: { size: 12 }, usePointStyle: true } },
+            }
+          }
+        });
+      } else {
+        srcWrap.innerHTML = '<div class="py-8 text-center text-sm text-gray-400">No source data yet.<br><span class="text-xs">Share your booking link with <code class="bg-gray-100 px-1 rounded">?src=instagram</code> to track sources.</span></div>';
+      }
     }
 
     // ── Settings ──────────────────────────────────────────────────────────────
 
+    const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    let hoursData = [];
+
     async function loadSettings() {
-      const biz = await api('/api/settings');
+      const [biz, hoursResp, autoSettings] = await Promise.all([
+        api('/api/settings'),
+        api('/api/hours'),
+        api('/api/automations/settings'),
+      ]);
+
       document.getElementById('set_name').value = biz.name || '';
       document.getElementById('set_phone').value = biz.phone || '';
       document.getElementById('set_address').value = biz.address || '';
@@ -772,41 +1317,186 @@
       document.getElementById('notif_email_conf').checked = biz.email_confirmations;
       document.getElementById('notif_email_rem').checked = biz.email_reminders;
       document.getElementById('notif_sms').checked = biz.sms_reminders;
+      document.getElementById('notif_whatsapp').checked = biz.whatsapp_reminders;
+      document.getElementById('notif_sms_conf').checked = biz.sms_confirmations;
+      document.getElementById('notif_wa_conf').checked = biz.whatsapp_confirmations;
+      document.getElementById('notif_2h').checked = biz.reminder_2h !== false;
 
-      // Logo
       if (biz.logo_url) {
         document.getElementById('logoPreviewImg').src = biz.logo_url;
         document.getElementById('logoPreviewWrap').classList.remove('hidden');
         document.getElementById('logoUploadText').textContent = 'Replace logo';
       }
 
-      // Brand colour
       const color = biz.primary_color || '#111827';
       setColor(color);
 
+      // Links section
+      const bLink = window.location.origin + '/book/' + (biz.slug || '');
+      document.getElementById('set_booking_link').value = bLink;
+      document.getElementById('set_google_review_link').value = biz.google_review_link || '';
+      document.getElementById('set_tracking_phone').value = biz.tracking_phone_number || '';
+
+      // Automation settings
+      document.getElementById('auto_missed_call').checked = autoSettings.missed_call_recovery || false;
+      document.getElementById('auto_missed_call_msg').value = autoSettings.missed_call_message || '';
+      document.getElementById('auto_followup').checked = autoSettings.followup_enabled || false;
+      document.getElementById('auto_followup_msg').value = autoSettings.followup_message || '';
+      document.getElementById('auto_reviews').checked = autoSettings.review_requests_enabled || false;
+      document.getElementById('auto_review_channel').value = autoSettings.review_request_channel || 'whatsapp';
+      document.getElementById('auto_review_msg').value = autoSettings.review_request_message || '';
+      document.getElementById('auto_wa_template').value = autoSettings.whatsapp_reminder_template || '';
+      document.getElementById('auto_reminder_timing').value = String(autoSettings.reminder_timing_hours || 24);
+      document.getElementById('auto_receptionist').checked = autoSettings.receptionist_enabled || false;
+      document.getElementById('auto_greeting').value = autoSettings.receptionist_greeting || '';
+
+      hoursData = hoursResp;
+      renderHoursGrid(hoursData);
+      applyTrialLock(biz.subscription_status);
+      renderBilling(biz);
+    }
+
+    async function saveLinks() {
+      await api('/api/automations/links', 'PATCH', {
+        google_review_link: document.getElementById('set_google_review_link').value || null,
+        tracking_phone_number: document.getElementById('set_tracking_phone').value || null,
+      });
+      alert('Links saved');
+    }
+
+    function copyBookingLink() {
+      const val = document.getElementById('set_booking_link').value;
+      navigator.clipboard.writeText(val).then(() => alert('Copied!'));
+    }
+
+    async function saveAutomationSettings() {
+      await api('/api/automations/settings', 'PUT', {
+        missed_call_recovery: document.getElementById('auto_missed_call').checked,
+        missed_call_message: document.getElementById('auto_missed_call_msg').value || null,
+        followup_enabled: document.getElementById('auto_followup').checked,
+        followup_message: document.getElementById('auto_followup_msg').value || null,
+        review_requests_enabled: document.getElementById('auto_reviews').checked,
+        review_request_channel: document.getElementById('auto_review_channel').value,
+        review_request_message: document.getElementById('auto_review_msg').value || null,
+        whatsapp_reminder_template: document.getElementById('auto_wa_template').value || null,
+        reminder_timing_hours: parseInt(document.getElementById('auto_reminder_timing').value) || 24,
+        receptionist_enabled: document.getElementById('auto_receptionist').checked,
+        receptionist_greeting: document.getElementById('auto_greeting').value || null,
+      });
+      alert('Automation settings saved');
+    }
+
+    function renderHoursGrid(hours) {
+      const grid = document.getElementById('hoursGrid');
+      grid.innerHTML = hours.map(h => `
+        <div class="flex items-center gap-3 py-1.5">
+          <span class="text-sm font-medium w-24 flex-shrink-0">${DAY_NAMES[h.day_of_week]}</span>
+          <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+            <input type="checkbox" id="day_open_${h.day_of_week}" ${h.is_open ? 'checked' : ''}
+              onchange="toggleDay(${h.day_of_week}, this.checked)"
+              class="sr-only peer">
+            <div class="w-9 h-5 bg-gray-200 peer-checked:bg-gray-900 rounded-full transition peer-focus:ring-2 peer-focus:ring-gray-300 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition peer-checked:after:translate-x-4"></div>
+          </label>
+          <div id="day_times_${h.day_of_week}" class="${h.is_open ? 'flex' : 'hidden'} items-center gap-2">
+            <input type="time" id="day_open_t_${h.day_of_week}" value="${h.open_time}"
+              class="border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="text-gray-400 text-sm">—</span>
+            <input type="time" id="day_close_t_${h.day_of_week}" value="${h.close_time}"
+              class="border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <span id="day_closed_${h.day_of_week}" class="${h.is_open ? 'hidden' : 'block'} text-sm text-gray-400">Closed</span>
+        </div>`).join('');
+    }
+
+    function toggleDay(dow, isOpen) {
+      document.getElementById(`day_times_${dow}`).classList.toggle('hidden', !isOpen);
+      document.getElementById(`day_closed_${dow}`).classList.toggle('hidden', isOpen);
+    }
+
+    async function saveHours() {
+      const hours = Array.from({length: 7}, (_, i) => ({
+        day_of_week: i,
+        is_open: document.getElementById(`day_open_${i}`).checked,
+        open_time: document.getElementById(`day_open_t_${i}`)?.value || '09:00',
+        close_time: document.getElementById(`day_close_t_${i}`)?.value || '18:00',
+      }));
+      await api('/api/hours', 'PUT', { hours });
+      alert('Opening hours saved');
+    }
+
+    function applyTrialLock(status) {
+      const isTrial = status === 'trial';
+      const paidEls = [
+        document.getElementById('notif_sms'),
+        document.getElementById('notif_whatsapp'),
+        document.getElementById('notif_sms_conf'),
+        document.getElementById('notif_wa_conf'),
+      ];
+      paidEls.forEach(el => {
+        el.disabled = isTrial;
+        if (isTrial) el.checked = false;
+      });
+      ['sms_pro_badge','whatsapp_pro_badge','sms_conf_badge','wa_conf_badge'].forEach(id => {
+        document.getElementById(id).classList.toggle('hidden', !isTrial);
+      });
+    }
+
+    function renderBilling(biz) {
+      const planLabel = { pro: 'Pro', ultra: 'Ultra' }[biz.plan] || 'Pro';
+      const planPrice = { pro: '£14.99', ultra: '£39.99' }[biz.plan] || '£14.99';
       const statusMap = {
-        trial: 'Free trial active', active: 'Active subscription',
-        cancelled: 'Subscription cancelled', expired: 'Subscription expired',
+        trial: 'Free trial',
+        active: `${planLabel} — Active`,
+        cancelled: 'Subscription cancelled',
+        expired: 'Subscription expired',
+        past_due: 'Payment past due',
       };
-      document.getElementById('subStatus').textContent = statusMap[biz.subscription_status] || biz.subscription_status;
-      if (biz.subscription_status !== 'active') {
-        document.getElementById('checkoutBtn').classList.remove('hidden');
+      const statusLabel = statusMap[biz.subscription_status] || biz.subscription_status;
+
+      let trialInfo = '';
+      if (biz.subscription_status === 'trial' && biz.trial_ends_at) {
+        const daysLeft = Math.ceil((new Date(biz.trial_ends_at) - Date.now()) / 86400000);
+        trialInfo = daysLeft > 0
+          ? `<span class="text-amber-600 font-medium">${daysLeft} day${daysLeft !== 1 ? 's' : ''} remaining</span>`
+          : '<span class="text-red-600 font-medium">Trial ended</span>';
       }
 
-      const emailAccount = await api('/api/settings/email-account');
-      const statusEl = document.getElementById('emailAccountStatus');
-      if (emailAccount && emailAccount.email_address) {
-        statusEl.innerHTML = `<div class="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-xl px-3 py-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-          Connected: ${emailAccount.email_address} (${emailAccount.provider})
+      const isActive = biz.subscription_status === 'active';
+      const billingEl = document.getElementById('billingContent');
+      billingEl.innerHTML = `
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-sm font-medium">${statusLabel}${trialInfo ? ' · ' + trialInfo : ''}</p>
+            <p class="text-xs text-gray-500 mt-0.5">${isActive ? `${planPrice}/month · Your booking page is live` : 'Pro £14.99/mo · Ultra £39.99/mo'}</p>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            ${isActive
+              ? `<button onclick="openPortal()" class="border border-gray-200 text-sm px-4 py-2 rounded-xl hover:bg-gray-50 transition font-medium">Manage billing</button>`
+              : `<button onclick="startCheckout('pro')" class="bg-gray-900 text-white px-3 py-2 rounded-xl text-xs font-semibold hover:bg-gray-700 transition">Pro £14.99</button>
+                 <button onclick="startCheckout('ultra')" class="bg-indigo-600 text-white px-3 py-2 rounded-xl text-xs font-semibold hover:bg-indigo-500 transition">Ultra £39.99</button>`
+            }
+          </div>
         </div>`;
-        document.getElementById('disconnectEmailBtn').classList.remove('hidden');
-      } else {
-        statusEl.innerHTML = '<p class="text-sm text-gray-400">No email connected — using SendGrid fallback</p>';
-      }
+    }
 
-      document.getElementById('gmailBtn').href = `/api/email/google/connect?token=${token}`;
-      document.getElementById('outlookBtn').href = `/api/email/microsoft/connect?token=${token}`;
+    function renderSubBanner(biz) {
+      if (biz.subscription_status === 'active') return;
+      const banner = document.getElementById('subBanner');
+      const title = document.getElementById('subBannerTitle');
+      const sub = document.getElementById('subBannerSub');
+
+      if (biz.subscription_status === 'trial' && biz.trial_ends_at) {
+        const daysLeft = Math.ceil((new Date(biz.trial_ends_at) - Date.now()) / 86400000);
+        if (daysLeft > 3) return;
+        title.textContent = daysLeft > 0 ? `Your trial ends in ${daysLeft} day${daysLeft !== 1 ? 's' : ''}` : 'Your trial has ended';
+        sub.textContent = 'Subscribe to keep your booking page live and accepting appointments.';
+      } else if (['cancelled', 'expired', 'past_due'].includes(biz.subscription_status)) {
+        title.textContent = 'Your booking page is paused';
+        sub.textContent = 'Reactivate your subscription to start accepting bookings again.';
+      } else {
+        return;
+      }
+      banner.classList.remove('hidden');
     }
 
     // ── Logo ────────────────────────────────────────────────────────────────────
@@ -874,19 +1564,342 @@
         email_confirmations: document.getElementById('notif_email_conf').checked,
         email_reminders: document.getElementById('notif_email_rem').checked,
         sms_reminders: document.getElementById('notif_sms').checked,
+        whatsapp_reminders: document.getElementById('notif_whatsapp').checked,
+        sms_confirmations: document.getElementById('notif_sms_conf').checked,
+        whatsapp_confirmations: document.getElementById('notif_wa_conf').checked,
+        reminder_2h: document.getElementById('notif_2h').checked,
       });
       alert('Notification settings saved');
     }
 
-    async function disconnectEmail() {
-      if (!confirm('Disconnect email account?')) return;
-      await api('/api/settings/email-account', 'DELETE');
-      loadSettings();
+    async function startCheckout(plan = 'pro') {
+      const data = await api(`/api/stripe/create-checkout?plan=${plan}`, 'POST');
+      if (data.url) window.location.href = data.url;
     }
 
-    async function startCheckout() {
-      const data = await api('/api/stripe/create-checkout', 'POST');
+    async function openPortal() {
+      const data = await api('/api/stripe/portal', 'POST');
       if (data.url) window.location.href = data.url;
+    }
+
+    // ── Staff ─────────────────────────────────────────────────────────────────
+
+    let allServices = [];
+    let staffHoursTemp = [];
+
+    async function loadStaff() {
+      const [members, svcs] = await Promise.all([
+        api('/api/staff'),
+        api('/api/services'),
+      ]);
+      allServices = svcs;
+
+      const list = document.getElementById('staffList');
+      if (!members.length) {
+        list.innerHTML = '<p class="text-gray-400 text-sm">No staff yet. Add your first team member.</p>';
+        return;
+      }
+      list.innerHTML = members.map(m => `
+        <div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+              style="background:${m.color}">${m.name.charAt(0).toUpperCase()}</div>
+            <div>
+              <p class="font-semibold text-sm">${m.name}</p>
+              <p class="text-xs text-gray-400">${m.email || m.phone || 'No contact info'}</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="editStaff(${m.id})" class="border border-gray-200 text-sm px-3 py-1.5 rounded-xl hover:bg-gray-50 transition">Edit</button>
+            <button onclick="removeStaff(${m.id})" class="text-sm text-red-500 px-3 py-1.5 rounded-xl hover:bg-red-50 transition">Remove</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function renderStaffHoursGrid(hours) {
+      staffHoursTemp = JSON.parse(JSON.stringify(hours));
+      document.getElementById('staffHoursGrid').innerHTML = hours.map(h => `
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-medium w-24 flex-shrink-0">${DAY_NAMES[h.day_of_week]}</span>
+          <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
+            <input type="checkbox" id="sh_open_${h.day_of_week}" ${h.is_open ? 'checked' : ''}
+              onchange="toggleStaffDay(${h.day_of_week}, this.checked)" class="sr-only peer">
+            <div class="w-9 h-5 bg-gray-200 peer-checked:bg-gray-900 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition peer-checked:after:translate-x-4"></div>
+          </label>
+          <div id="sh_times_${h.day_of_week}" class="${h.is_open ? 'flex' : 'hidden'} items-center gap-2">
+            <input type="time" id="sh_open_t_${h.day_of_week}" value="${h.open_time}"
+              class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none">
+            <span class="text-gray-400 text-xs">—</span>
+            <input type="time" id="sh_close_t_${h.day_of_week}" value="${h.close_time}"
+              class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none">
+          </div>
+          <span id="sh_closed_${h.day_of_week}" class="${h.is_open ? 'hidden' : 'block'} text-sm text-gray-400">Closed</span>
+        </div>`).join('');
+    }
+
+    function toggleStaffDay(dow, isOpen) {
+      document.getElementById(`sh_times_${dow}`).classList.toggle('hidden', !isOpen);
+      document.getElementById(`sh_closed_${dow}`).classList.toggle('hidden', isOpen);
+    }
+
+    function renderStaffServicesGrid(selectedIds) {
+      document.getElementById('staffServicesGrid').innerHTML = allServices.map(s => `
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" value="${s.id}" ${selectedIds.includes(s.id) ? 'checked' : ''}
+            class="staff-svc-cb w-4 h-4 accent-blue-600">
+          <span class="text-sm">${s.name} <span class="text-gray-400">· £${parseFloat(s.price).toFixed(2)}</span></span>
+        </label>`).join('');
+    }
+
+    function openStaffModal() {
+      document.getElementById('staffId').value = '';
+      document.getElementById('staffModalTitle').textContent = 'Add staff member';
+      document.getElementById('staffName').value = '';
+      document.getElementById('staffEmail').value = '';
+      document.getElementById('staffPhone').value = '';
+      document.getElementById('staffColor').value = '#6366f1';
+      renderStaffHoursGrid([
+        ...Array.from({length: 7}, (_, i) => ({day_of_week: i, is_open: i < 5, open_time: '09:00', close_time: '18:00'}))
+      ]);
+      renderStaffServicesGrid([]);
+      document.getElementById('staffModal').classList.remove('hidden');
+    }
+
+    async function editStaff(id) {
+      const [member, hrs, svcResp] = await Promise.all([
+        api(`/api/staff`).then(list => list.find(m => m.id === id)),
+        api(`/api/staff/${id}/hours`),
+        api(`/api/staff/${id}/services`),
+      ]);
+      document.getElementById('staffId').value = id;
+      document.getElementById('staffModalTitle').textContent = 'Edit staff member';
+      document.getElementById('staffName').value = member.name;
+      document.getElementById('staffEmail').value = member.email || '';
+      document.getElementById('staffPhone').value = member.phone || '';
+      document.getElementById('staffColor').value = member.color || '#6366f1';
+      renderStaffHoursGrid(hrs);
+      renderStaffServicesGrid(svcResp.service_ids || []);
+      document.getElementById('staffModal').classList.remove('hidden');
+    }
+
+    async function saveStaff() {
+      const id = document.getElementById('staffId').value;
+      const name = document.getElementById('staffName').value.trim();
+      if (!name) return alert('Name is required');
+
+      const payload = {
+        name,
+        email: document.getElementById('staffEmail').value || null,
+        phone: document.getElementById('staffPhone').value || null,
+        color: document.getElementById('staffColor').value,
+      };
+
+      let staffId = id ? parseInt(id) : null;
+      if (id) {
+        await api(`/api/staff/${id}`, 'PATCH', payload);
+      } else {
+        const created = await api('/api/staff', 'POST', payload);
+        staffId = created.id;
+      }
+
+      // Save hours
+      const hours = Array.from({length: 7}, (_, i) => ({
+        day_of_week: i,
+        is_open: document.getElementById(`sh_open_${i}`)?.checked || false,
+        open_time: document.getElementById(`sh_open_t_${i}`)?.value || '09:00',
+        close_time: document.getElementById(`sh_close_t_${i}`)?.value || '18:00',
+      }));
+      await api(`/api/staff/${staffId}/hours`, 'PUT', { hours });
+
+      // Save services
+      const serviceIds = Array.from(document.querySelectorAll('.staff-svc-cb:checked')).map(el => parseInt(el.value));
+      await api(`/api/staff/${staffId}/services`, 'PUT', { service_ids: serviceIds });
+
+      closeStaffModal();
+      loadStaff();
+    }
+
+    async function removeStaff(id) {
+      if (!confirm('Remove this staff member?')) return;
+      await api(`/api/staff/${id}`, 'DELETE');
+      loadStaff();
+    }
+
+    function closeStaffModal() {
+      document.getElementById('staffModal').classList.add('hidden');
+    }
+
+    // ── Usage ─────────────────────────────────────────────────────────────────
+
+    async function loadUsage() {
+      const data = await api('/api/usage');
+      document.getElementById('usageMonth').textContent = data.month;
+      document.getElementById('usage-wa-count').textContent = data.whatsapp_count;
+      document.getElementById('usage-wa-cost').textContent = `£${data.whatsapp_cost.toFixed(2)} (£0.05 each)`;
+      document.getElementById('usage-sms-count').textContent = data.sms_count;
+      document.getElementById('usage-sms-cost').textContent = `£${data.sms_cost.toFixed(2)} (£0.10 each)`;
+      document.getElementById('usage-total').textContent = `£${data.total_estimated.toFixed(2)}`;
+      document.getElementById('usage-email-count').textContent = data.email_count;
+
+      const channelIcon = { email: '✉️', sms: '💬', whatsapp: '📱' };
+      const triggerLabel = { confirmation: 'Booking confirmation', '24h': '24h reminder', '2h': '2h reminder' };
+      const statusColor = { sent: 'bg-green-50 text-green-700', failed: 'bg-red-50 text-red-600' };
+
+      const body = document.getElementById('usageLogBody');
+      if (!data.recent_logs.length) {
+        body.innerHTML = '<div class="px-6 py-8 text-center text-sm text-gray-400">No messages sent yet this month.</div>';
+        return;
+      }
+      body.innerHTML = data.recent_logs.map(log => `
+        <div class="px-6 py-3 border-b border-gray-50 flex items-center justify-between text-sm">
+          <div class="flex items-center gap-3">
+            <span class="text-base">${channelIcon[log.channel] || '📨'}</span>
+            <div>
+              <p class="font-medium text-gray-800">${triggerLabel[log.trigger] || log.trigger}</p>
+              <p class="text-xs text-gray-400">${log.channel.charAt(0).toUpperCase() + log.channel.slice(1)} · ${new Date(log.created_at).toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'})}</p>
+            </div>
+          </div>
+          <span class="text-xs px-2 py-1 rounded-full font-medium ${statusColor[log.status] || 'bg-gray-100'}">${log.status}</span>
+        </div>`).join('');
+    }
+
+    // ── Automations ───────────────────────────────────────────────────────────
+
+    let _bizPlan = 'pro';
+    let _bizStatus = 'trial';
+
+    async function loadAutomations() {
+      if (_bizPlan !== 'ultra' && _bizStatus === 'active') {
+        document.getElementById('tab-automations').innerHTML = `
+          <div class="max-w-lg mx-auto text-center py-20">
+            <div class="text-4xl mb-4">🚀</div>
+            <h2 class="text-2xl font-bold mb-3">Automations are Ultra-only</h2>
+            <p class="text-gray-500 mb-8">Missed call recovery, review requests, smart receptionist and follow-ups are included in the Ultra plan at £39.99/month.</p>
+            <button onclick="startCheckout('ultra')" class="bg-indigo-600 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-indigo-500 transition text-sm">Upgrade to Ultra — £39.99/mo</button>
+            <p class="text-xs text-gray-400 mt-3">Cancel anytime · No contracts</p>
+          </div>`;
+        return;
+      }
+
+      const [stats, missed, reviews, callbacks, voicemails] = await Promise.all([
+        api('/api/automations/stats'),
+        api('/api/automations/missed-calls'),
+        api('/api/automations/review-requests'),
+        api('/api/automations/callbacks'),
+        api('/api/automations/voicemails'),
+      ]);
+
+      document.getElementById('auto-missed').textContent = stats.missed_calls_month;
+      document.getElementById('auto-recovery').textContent = stats.recovery_sent_month;
+      document.getElementById('auto-recovered').textContent = stats.recovered_bookings_month;
+      document.getElementById('auto-reviews').textContent = stats.review_requests_month;
+      document.getElementById('auto-callbacks').textContent = stats.callbacks_pending;
+      document.getElementById('auto-voicemails').textContent = stats.voicemails_unread;
+      document.getElementById('auto-failed').textContent = stats.failed_messages_month;
+
+      renderMissedCalls(missed);
+      renderReviewRequests(reviews);
+      renderCallbacks(callbacks);
+      renderVoicemails(voicemails);
+    }
+
+    function showAutoTab(name) {
+      document.querySelectorAll('.auto-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.auto-tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('autopanel-' + name).classList.remove('hidden');
+      document.getElementById('atab-' + name).classList.add('active');
+    }
+
+    function renderMissedCalls(items) {
+      const el = document.getElementById('missedCallsBody');
+      if (!items.length) {
+        el.innerHTML = '<div class="px-6 py-8 text-center text-sm text-gray-400">No missed calls recorded yet.</div>';
+        return;
+      }
+      el.innerHTML = items.map(mc => `
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between text-sm">
+          <div>
+            <p class="font-medium text-gray-900">${mc.caller_number}</p>
+            <p class="text-xs text-gray-400">${new Date(mc.called_at).toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'})}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            ${mc.recovery_sent ? '<span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">Recovery sent</span>' : ''}
+            ${mc.booking_id ? '<span class="text-xs bg-green-50 text-green-700 px-2 py-1 rounded-full">Booked ✓</span>' : ''}
+            ${mc.followup_sent ? '<span class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded-full">Follow-up sent</span>' : ''}
+            <span class="text-xs px-2 py-1 rounded-full ${mc.call_status === 'recovered' ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'}">${mc.call_status}</span>
+          </div>
+        </div>`).join('');
+    }
+
+    function renderReviewRequests(items) {
+      const el = document.getElementById('reviewRequestsBody');
+      if (!items.length) {
+        el.innerHTML = '<div class="px-6 py-8 text-center text-sm text-gray-400">No review requests sent yet.</div>';
+        return;
+      }
+      const statusColors = { sent: 'bg-green-50 text-green-700', failed: 'bg-red-50 text-red-600', pending: 'bg-gray-100 text-gray-500' };
+      el.innerHTML = items.map(r => `
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between text-sm">
+          <div>
+            <p class="font-medium text-gray-900">Booking #${r.booking_id}</p>
+            <p class="text-xs text-gray-400">${r.channel} · ${new Date(r.created_at).toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'})}</p>
+          </div>
+          <span class="text-xs px-2 py-1 rounded-full ${statusColors[r.status] || 'bg-gray-100'}">${r.status}</span>
+        </div>`).join('');
+    }
+
+    function renderCallbacks(items) {
+      const el = document.getElementById('callbacksBody');
+      if (!items.length) {
+        el.innerHTML = '<div class="px-6 py-8 text-center text-sm text-gray-400">No callback requests yet.</div>';
+        return;
+      }
+      el.innerHTML = items.map(cb => `
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between text-sm">
+          <div>
+            <p class="font-medium text-gray-900">${cb.caller_number}</p>
+            <p class="text-xs text-gray-400">${new Date(cb.requested_at).toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'})}</p>
+            ${cb.notes ? `<p class="text-xs text-gray-500 italic mt-0.5">${cb.notes}</p>` : ''}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs px-2 py-1 rounded-full ${cb.status === 'completed' ? 'bg-green-50 text-green-700' : 'bg-amber-50 text-amber-700'}">${cb.status}</span>
+            ${cb.status === 'pending' ? `<button onclick="markCallbackDone(${cb.id})" class="text-xs border border-gray-200 px-2 py-1 rounded-lg hover:bg-gray-50 transition">Mark done</button>` : ''}
+          </div>
+        </div>`).join('');
+    }
+
+    async function markCallbackDone(id) {
+      await api(`/api/automations/callbacks/${id}`, 'PATCH', { status: 'completed' });
+      loadAutomations();
+    }
+
+    function renderVoicemails(items) {
+      const el = document.getElementById('voicemailsBody');
+      if (!items.length) {
+        el.innerHTML = '<div class="px-6 py-8 text-center text-sm text-gray-400">No voicemails yet.</div>';
+        return;
+      }
+      const catColors = {
+        booking: 'bg-blue-50 text-blue-700',
+        pricing: 'bg-purple-50 text-purple-700',
+        cancellation: 'bg-amber-50 text-amber-700',
+        complaint: 'bg-red-50 text-red-600',
+        general: 'bg-gray-100 text-gray-600',
+      };
+      el.innerHTML = items.map(v => `
+        <div class="px-6 py-4 border-b border-gray-50">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <p class="font-medium text-sm text-gray-900">${v.caller_number}</p>
+              <p class="text-xs text-gray-400">${new Date(v.created_at).toLocaleString('en-GB', {dateStyle:'medium',timeStyle:'short'})}${v.duration_seconds ? ' · ' + v.duration_seconds + 's' : ''}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              ${v.ai_category ? `<span class="text-xs px-2 py-1 rounded-full ${catColors[v.ai_category] || catColors.general}">${v.ai_category}</span>` : ''}
+              ${v.recording_url ? `<a href="${v.recording_url}" target="_blank" class="text-xs border border-gray-200 px-2 py-1 rounded-lg hover:bg-gray-50 transition">▶ Play</a>` : ''}
+            </div>
+          </div>
+          ${v.transcription ? `<p class="text-xs text-gray-600 bg-gray-50 rounded-lg px-3 py-2">"${v.transcription}"</p>` : ''}
+        </div>`).join('');
     }
 
     function logout() {

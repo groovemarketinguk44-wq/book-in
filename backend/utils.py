@@ -3,6 +3,12 @@ import unicodedata
 from sqlalchemy.orm import Session
 
 
+def render_template(template: str, variables: dict) -> str:
+    for key, value in variables.items():
+        template = template.replace("{{" + key + "}}", str(value or ""))
+    return template
+
+
 def slugify(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
     text = text.encode("ascii", "ignore").decode("ascii")

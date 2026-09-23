@@ -2,9 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from .config import settings
 
-# Fly.io sets DATABASE_URL with postgres:// but SQLAlchemy 2.x requires postgresql://
 _db_url = settings.DATABASE_URL.replace("postgres://", "postgresql://", 1)
-engine = create_engine(_db_url, pool_pre_ping=True)
+
+# SQLite needs connect_args; Postgres uses pool_pre_ping
+if _db_url.startswith("sqlite"):
+    engine = create_engine(_db_url, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(_db_url, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 

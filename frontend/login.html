@@ -65,7 +65,7 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || 'Login failed');
         localStorage.setItem('token', data.access_token);
-        window.location.href = '/dashboard';
+        window.location.href = data.is_platform_admin ? '/admin' : '/dashboard';
       } catch (ex) {
         err.textContent = ex.message;
         err.classList.remove('hidden');

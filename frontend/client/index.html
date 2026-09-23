@@ -66,6 +66,12 @@
         </div>
       </div>
 
+      <!-- Staff picker (hidden when no staff) -->
+      <div id="staffPickerSection" class="hidden mb-5">
+        <p class="text-sm font-semibold mb-3">Choose who you'd like</p>
+        <div id="staffPickerList" class="flex gap-2 overflow-x-auto pb-1"></div>
+      </div>
+
       <!-- Calendar -->
       <div class="bg-white border border-gray-200 rounded-2xl p-5 mb-5">
         <div class="flex items-center justify-between mb-4">
@@ -147,6 +153,7 @@
     }
 
     const slug = getSlug();
+    const bookingSource = new URLSearchParams(window.location.search).get('src') || null;
     let allServices = [];
     let allCategories = [];
     let selectedService = null;
@@ -154,6 +161,9 @@
     let selectedSlot = null;
     let activeCatId = null;
     let calYear, calMonth;
+    let businessHours = [];
+    let staffList = [];
+    let selectedStaffId = null;
 
     function goStep(n) {
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -181,12 +191,14 @@
         img.classList.remove('hidden');
       }
 
-      const [cats, svcs] = await Promise.all([
+      const [cats, svcs, hrs] = await Promise.all([
         fetch(`/api/client/${slug}/categories`).then(r => r.json()),
         fetch(`/api/client/${slug}/services`).then(r => r.json()),
+        fetch(`/api/client/${slug}/hours`).then(r => r.json()),
       ]);
       allCategories = cats;
       allServices = svcs;
+      businessHours = hrs;
 
       renderCategoryTabs();
       renderServices(null);
@@ -251,8 +263,9 @@
       }).join('');
     }
 
-    function selectService(svc) {
+    async function selectService(svc) {
       selectedService = svc;
+      selectedStaffId = null;
       document.getElementById('selSvcName').textContent = svc.name;
       document.getElementById('selSvcMeta').textContent = `£${parseFloat(svc.price).toFixed(2)} · ${svc.duration_minutes} mins`;
       const imgEl = document.getElementById('selSvcImg');
@@ -263,11 +276,47 @@
         imgEl.classList.add('hidden');
       }
 
+      // Load staff for this service
+      staffList = await fetch(`/api/client/${slug}/staff?service_id=${svc.id}`).then(r => r.json());
+      renderStaffPicker();
+
       const now = new Date();
       calYear = now.getFullYear();
       calMonth = now.getMonth();
       renderCalendar();
       goStep(2);
+    }
+
+    function renderStaffPicker() {
+      const section = document.getElementById('staffPickerSection');
+      if (!staffList.length) { section.classList.add('hidden'); return; }
+      section.classList.remove('hidden');
+      const container = document.getElementById('staffPickerList');
+      container.innerHTML = [
+        `<button onclick="selectStaff(null, this)"
+          class="staff-btn flex-shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 border-gray-900 bg-gray-900 text-white transition">
+          <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">Any</div>
+          <span class="text-xs font-medium">Any</span>
+        </button>`,
+        ...staffList.map(s =>
+          `<button onclick="selectStaff(${s.id}, this)"
+            class="staff-btn flex-shrink-0 flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 border-gray-200 hover:border-gray-400 transition">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold" style="background:${s.color}">${s.name.charAt(0).toUpperCase()}</div>
+            <span class="text-xs font-medium text-gray-700">${s.name}</span>
+          </button>`)
+      ].join('');
+    }
+
+    function selectStaff(id, btn) {
+      selectedStaffId = id;
+      document.querySelectorAll('.staff-btn').forEach(b => {
+        b.classList.remove('border-gray-900', 'bg-gray-900', 'text-white');
+        b.classList.add('border-gray-200');
+      });
+      btn.classList.add('border-gray-900', 'bg-gray-900', 'text-white');
+      btn.classList.remove('border-gray-200');
+      // Reload slots for new staff selection if a date is already picked
+      if (selectedDate) selectDate(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
     }
 
     function renderCalendar() {
@@ -283,15 +332,19 @@
       for (let i = 0; i < startDay; i++) html += '<div></div>';
       for (let day = 1; day <= daysInMonth; day++) {
         const date = new Date(calYear, calMonth, day);
+        const dow = (date.getDay() + 6) % 7; // 0=Mon, 6=Sun
+        const hourEntry = businessHours.find(h => h.day_of_week === dow);
+        const isClosed = hourEntry && !hourEntry.is_open;
         const isPast = date < today;
+        const isDisabled = isPast || isClosed;
         const isSelected = selectedDate &&
           selectedDate.getDate() === day &&
           selectedDate.getMonth() === calMonth &&
           selectedDate.getFullYear() === calYear;
         const isToday = date.toDateString() === today.toDateString();
 
-        html += `<div class="cal-day ${isPast ? 'disabled' : ''} ${isSelected ? 'selected' : ''} ${isToday && !isSelected ? 'today' : ''}"
-          onclick="${isPast ? '' : `selectDate(${calYear},${calMonth},${day})`}">${day}</div>`;
+        html += `<div class="cal-day ${isDisabled ? 'disabled' : ''} ${isSelected ? 'selected' : ''} ${isToday && !isSelected && !isDisabled ? 'today' : ''}"
+          onclick="${isDisabled ? '' : `selectDate(${calYear},${calMonth},${day})`}">${day}</div>`;
       }
       document.getElementById('calGrid').innerHTML = html;
     }
@@ -314,7 +367,8 @@
       renderCalendar();
 
       const dateStr = selectedDate.toISOString().split('T')[0];
-      const slots = await fetch(`/api/slots/client/${slug}/${selectedService.id}?date=${dateStr}`).then(r => r.json());
+      const staffParam = selectedStaffId ? `&staff_id=${selectedStaffId}` : '';
+      const slots = await fetch(`/api/slots/client/${slug}/${selectedService.id}?date=${dateStr}${staffParam}`).then(r => r.json());
 
       const label = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
       document.getElementById('slotsLabel').textContent = label;
@@ -369,8 +423,10 @@
             customer_email: email,
             customer_phone: phone || null,
             service_id: selectedService.id,
+            staff_id: selectedStaffId || null,
             start_time: selectedSlot,
             notes: notes || null,
+            source: bookingSource,
           })
         });
         const data = await res.json();

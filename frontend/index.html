@@ -3,116 +3,660 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book-In — Simple Booking for Service Businesses</title>
+  <title>Book-In — Booking Software for Salons, Barbers &amp; Studios</title>
+  <meta name="description" content="Online bookings, automated reminders and staff scheduling for salons, barbers, tattoo studios and beauty businesses. No commission. From £14.99/month.">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>body{font-family:'Inter',sans-serif;}</style>
-</head>
-<body class="bg-white text-gray-900">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, body { font-family: 'Inter', sans-serif; }
+    body { overflow-x: hidden; }
 
-  <!-- Nav -->
-  <nav class="border-b border-gray-100 px-6 py-4">
+    /* Noise texture */
+    .noise::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Float animations */
+    @keyframes floatA {
+      0%,100% { transform: translateY(0px) rotate(0deg); }
+      50%      { transform: translateY(-12px) rotate(.4deg); }
+    }
+    @keyframes floatB {
+      0%,100% { transform: translateY(-6px) rotate(-.3deg); }
+      50%      { transform: translateY(7px) rotate(.3deg); }
+    }
+    @keyframes floatC {
+      0%,100% { transform: translateY(4px); }
+      50%      { transform: translateY(-8px); }
+    }
+    .fa { animation: floatA 5s ease-in-out infinite; }
+    .fb { animation: floatB 4.5s ease-in-out infinite; }
+    .fc { animation: floatC 6s ease-in-out infinite; }
+    .fd { animation: floatA 7s ease-in-out infinite 1.2s; }
+
+    /* Scroll reveal */
+    .fu {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+    }
+    .fu.on { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: .07s; }
+    .d2 { transition-delay: .14s; }
+    .d3 { transition-delay: .21s; }
+    .d4 { transition-delay: .28s; }
+    .d5 { transition-delay: .35s; }
+    .d6 { transition-delay: .42s; }
+
+    /* Navbar */
+    #nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,.92);
+      transition: background .25s, box-shadow .25s;
+    }
+    #nav.scrolled {
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(0,0,0,.06);
+    }
+
+    /* Buttons */
+    .btn-p {
+      background: #0f172a; color: #fff;
+      padding: 13px 28px; border-radius: 14px;
+      font-size: 15px; font-weight: 600; letter-spacing: -.01em;
+      display: inline-block;
+      transition: background .18s, transform .18s, box-shadow .18s;
+    }
+    .btn-p:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(15,23,42,.22);
+    }
+    .btn-p:active { transform: translateY(0); }
+    .btn-s {
+      color: #374151;
+      padding: 13px 28px; border-radius: 14px;
+      font-size: 15px; font-weight: 600;
+      display: inline-block;
+      border: 1.5px solid #e5e7eb;
+      transition: background .18s, border-color .18s, transform .18s;
+    }
+    .btn-s:hover {
+      background: #f9fafb; border-color: #d1d5db;
+      transform: translateY(-1px);
+    }
+
+    /* Glass notification cards */
+    .notif {
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.75);
+      border-radius: 14px;
+      padding: 10px 14px;
+      box-shadow: 0 6px 28px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.9) inset;
+      white-space: nowrap;
+    }
+
+    /* Phone frame */
+    .phone {
+      width: 232px; height: 472px;
+      background: #0f172a;
+      border-radius: 40px;
+      padding: 9px;
+      box-shadow: 0 40px 90px rgba(15,23,42,.38), 0 0 0 1px rgba(255,255,255,.05) inset;
+      flex-shrink: 0;
+    }
+    .phone-inner {
+      width: 100%; height: 100%;
+      background: #fff;
+      border-radius: 33px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+
+    /* Feature cards */
+    .fc-card {
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 20px;
+      padding: 28px;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s;
+    }
+    .fc-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 48px rgba(0,0,0,.07);
+      border-color: #e2e8f0;
+    }
+
+    /* Business type cards */
+    .biz-card {
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 16px;
+      padding: 20px 18px;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+    .biz-card:hover {
+      border-color: #e2e8f0;
+      box-shadow: 0 6px 24px rgba(0,0,0,.05);
+      transform: translateY(-2px);
+    }
+
+    /* Testimonial cards */
+    .tm-card {
+      background: #fff;
+      border: 1px solid #f1f5f9;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.035);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .tm-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 36px rgba(0,0,0,.07);
+    }
+
+    /* Star rating */
+    .stars { color: #f59e0b; letter-spacing: 1px; }
+
+    /* Comparison rows */
+    .cmp-bad  li:before { content: '✗ '; color: #f87171; }
+    .cmp-good li:before { content: '✓ '; color: #34d399; }
+    .cmp-bad  li { color: #9ca3af; }
+    .cmp-good li { color: #f8fafc; }
+
+    /* Accordion FAQ */
+    .faq-body { display: none; }
+    .faq-item.open .faq-body { display: block; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-chevron { transition: transform .25s ease; display: inline-block; }
+
+    /* Radial hero glow */
+    .hero-glow {
+      background: radial-gradient(ellipse 70% 55% at 65% 45%, rgba(37,99,235,.055) 0%, transparent 70%);
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-900 antialiased noise">
+
+  <!-- ── Navbar ───────────────────────────────────────────────────────────── -->
+  <nav id="nav" class="border-b border-gray-100/80 px-6 py-4">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
-      <span class="text-xl font-bold tracking-tight">Book-In</span>
-      <div class="flex items-center gap-4">
-        <a href="/pricing" class="text-sm text-gray-500 hover:text-gray-900">Pricing</a>
-        <a href="/login" class="text-sm text-gray-500 hover:text-gray-900">Log in</a>
-        <a href="/signup" class="text-sm bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition">Start free trial</a>
+      <span class="text-xl font-bold tracking-tight select-none">Book-In</span>
+      <div class="flex items-center gap-3 md:gap-5">
+        <a href="/pricing" class="hidden sm:block text-sm text-gray-500 hover:text-gray-900 transition font-medium">Pricing</a>
+        <a href="/login" class="text-sm text-gray-500 hover:text-gray-900 transition font-medium">Log in</a>
+        <a href="/signup" class="btn-p text-sm !py-2.5 !px-5 !rounded-xl">Start free trial</a>
       </div>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="max-w-4xl mx-auto px-6 pt-24 pb-20 text-center">
-    <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
-      7-day free trial · No credit card required
-    </div>
-    <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
-      Simple Booking System<br>for Service Businesses
-    </h1>
-    <p class="text-xl text-gray-500 mb-10 max-w-xl mx-auto">No clutter. Just bookings.</p>
-    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-      <a href="/signup" class="bg-gray-900 text-white px-8 py-3.5 rounded-xl text-base font-semibold hover:bg-gray-700 transition">
-        Start Free Trial
-      </a>
-      <a href="/pricing" class="border border-gray-200 text-gray-700 px-8 py-3.5 rounded-xl text-base font-semibold hover:bg-gray-50 transition">
-        See pricing
-      </a>
+  <!-- ── Hero ─────────────────────────────────────────────────────────────── -->
+  <section class="hero-glow relative overflow-hidden">
+    <div class="max-w-6xl mx-auto px-6 pt-14 pb-14 md:pt-28 md:pb-28">
+      <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-12">
+
+        <!-- Left: copy -->
+        <div class="flex-1 max-w-xl text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-7 border border-blue-100/80">
+            <span class="w-1.5 h-1.5 bg-blue-500 rounded-full" style="animation:floatA 1.8s ease-in-out infinite;opacity:1"></span>
+            14-day free trial &nbsp;·&nbsp; No credit card required
+          </div>
+
+          <h1 class="text-[28px] sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1] mb-6 text-gray-900">
+            Bookings.<br>Reminders.<br>Staff schedules.
+          </h1>
+
+          <p class="text-base md:text-xl text-gray-500 mb-8 leading-relaxed">
+            Online bookings, automated reminders and staff management for salons, barbers and studios — without the bloated software or hidden fees.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-9">
+            <a href="/signup" class="btn-p text-center">Start Free Trial</a>
+            <a href="/pricing" class="btn-s text-center">See pricing →</a>
+          </div>
+
+          <!-- Trust badges -->
+          <div class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-gray-400 justify-center lg:justify-start">
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>No commission fees</span>
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Cancel anytime</span>
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Setup in 5 minutes</span>
+            <span class="flex items-center gap-1.5"><svg class="w-3.5 h-3.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>No app needed</span>
+          </div>
+        </div>
+
+        <!-- Right: phone + floating cards -->
+        <div class="relative flex items-center justify-center flex-shrink-0 mx-auto overflow-hidden lg:overflow-visible" style="width:360px; max-width:calc(100vw - 48px); height:520px;">
+
+          <!-- Floating notification cards -->
+          <div class="notif fa absolute z-10" style="left:-10px; top:52px; font-size:12px;">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900">New booking</p>
+                <p class="text-gray-400" style="font-size:11px;">Sarah J. — Haircut &amp; Colour</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="notif fb absolute z-10" style="right:-14px; top:110px; font-size:12px;">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#e7fce7;">
+                <span style="font-size:14px;">📱</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900">WhatsApp sent</p>
+                <p class="text-gray-400" style="font-size:11px;">Reminder delivered ✓</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="notif fc absolute z-10" style="left:-20px; bottom:110px; font-size:12px;">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900">Today's revenue</p>
+                <p class="text-gray-400" style="font-size:11px;">£ 248.00</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="notif fd absolute z-10" style="right:-8px; bottom:80px; font-size:12px;">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900">Tomorrow</p>
+                <p class="text-gray-400" style="font-size:11px;">4 appointments booked</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone mockup -->
+          <div class="phone">
+            <div class="phone-inner">
+              <!-- Status bar -->
+              <div class="flex justify-between items-center px-5 pt-3 pb-1" style="background:#0f172a;">
+                <span class="text-white/60 text-xs font-medium">9:41</span>
+                <div class="flex gap-1 items-center">
+                  <svg class="w-3 h-3 text-white/60" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+                </div>
+              </div>
+              <!-- App header -->
+              <div class="px-4 pb-3 pt-2 text-center" style="background:#0f172a;">
+                <p class="text-white font-bold text-sm">Style Studio</p>
+                <p class="text-gray-400 text-xs mt-0.5">London, UK</p>
+              </div>
+              <!-- Booking content -->
+              <div class="flex-1 overflow-hidden flex flex-col items-center justify-center px-4 py-5 bg-gray-50">
+                <!-- Checkmark -->
+                <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center mb-3 shadow-lg shadow-green-200">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <p class="font-bold text-gray-900 text-sm mb-0.5">Booking confirmed!</p>
+                <p class="text-gray-400 text-xs mb-4">Reminder on its way</p>
+                <!-- Booking details card -->
+                <div class="bg-white rounded-2xl p-4 w-full shadow-sm border border-gray-100">
+                  <div class="space-y-2.5 text-xs">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400">Service</span>
+                      <span class="font-semibold text-gray-800">Haircut &amp; Beard</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400">Date</span>
+                      <span class="font-semibold text-gray-800">Tomorrow, 3:30 PM</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400">Staff</span>
+                      <div class="flex items-center gap-1.5">
+                        <div class="w-4 h-4 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold" style="font-size:8px;">A</div>
+                        <span class="font-semibold text-gray-800">Alex</span>
+                      </div>
+                    </div>
+                    <div class="h-px bg-gray-100"></div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400">Price</span>
+                      <span class="font-bold text-gray-900">£28.00</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Small time slots preview -->
+                <div class="mt-3 w-full">
+                  <p class="text-gray-400 text-xs mb-1.5">Available times</p>
+                  <div class="flex gap-1.5 flex-wrap">
+                    <span class="bg-gray-900 text-white rounded-lg px-2 py-1 text-xs font-medium">3:30 PM</span>
+                    <span class="bg-white border border-gray-200 text-gray-500 rounded-lg px-2 py-1 text-xs">4:00 PM</span>
+                    <span class="bg-white border border-gray-200 text-gray-500 rounded-lg px-2 py-1 text-xs">4:30 PM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Feature grid -->
-  <section class="max-w-5xl mx-auto px-6 pb-24">
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-gray-50 rounded-2xl p-6">
+  <!-- ── Built for your business ────────────────────────────────────────── -->
+  <section class="border-t border-gray-100 bg-gray-50/70 py-20 px-6">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12 fu">
+        <h2 class="text-3xl font-bold mb-3">Built for your business</h2>
+        <p class="text-gray-500">If clients book time with you, Book-In works for you.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="biz-card fu d1">
+          <div class="text-2xl mb-3">💇</div>
+          <p class="font-semibold text-sm mb-1">Hair Salons</p>
+          <p class="text-xs text-gray-400">Staff rotas, colour services and colour appointment durations.</p>
+        </div>
+        <div class="biz-card fu d2">
+          <div class="text-2xl mb-3">✂️</div>
+          <p class="font-semibold text-sm mb-1">Barbers</p>
+          <p class="text-xs text-gray-400">Fast bookings, walk-in gaps and multiple chair management.</p>
+        </div>
+        <div class="biz-card fu d3">
+          <div class="text-2xl mb-3">🎨</div>
+          <p class="font-semibold text-sm mb-1">Tattoo Studios</p>
+          <p class="text-xs text-gray-400">Artist schedules, consultation bookings and long sessions.</p>
+        </div>
+        <div class="biz-card fu d4">
+          <div class="text-2xl mb-3">💅</div>
+          <p class="font-semibold text-sm mb-1">Nail Studios</p>
+          <p class="text-xs text-gray-400">Service menus, add-ons and back-to-back appointment flow.</p>
+        </div>
+        <div class="biz-card fu d5">
+          <div class="text-2xl mb-3">🧖</div>
+          <p class="font-semibold text-sm mb-1">Beauty Clinics</p>
+          <p class="text-xs text-gray-400">Treatment rooms, specialist staff and client reminders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ───────────────────────────────────────────────────────── -->
+  <section class="max-w-5xl mx-auto px-6 py-24">
+    <div class="text-center mb-14 fu">
+      <h2 class="text-3xl font-bold mb-3">Everything you need. Nothing you don't.</h2>
+      <p class="text-gray-500 max-w-md mx-auto">Purpose-built for service businesses. No bloat, no complexity, no learning curve.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <div class="fc-card fu d1">
         <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         </div>
         <h3 class="font-semibold mb-2">Online Booking</h3>
-        <p class="text-sm text-gray-500">Clients book directly through your personalised booking page. Available 24/7.</p>
+        <p class="text-sm text-gray-500">Your own personalised booking page, live 24/7. Clients book in under a minute — no account needed.</p>
       </div>
-      <div class="bg-gray-50 rounded-2xl p-6">
+
+      <div class="fc-card fu d2">
         <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
         </div>
         <h3 class="font-semibold mb-2">Automatic Reminders</h3>
-        <p class="text-sm text-gray-500">Email and SMS reminders sent 24 hours before each appointment. Reduce no-shows.</p>
+        <p class="text-sm text-gray-500">Reduce no-shows with automated email, SMS and WhatsApp reminders sent 24h and 2h before each appointment.</p>
       </div>
-      <div class="bg-gray-50 rounded-2xl p-6">
+
+      <div class="fc-card fu d3">
+        <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <h3 class="font-semibold mb-2">Staff Management</h3>
+        <p class="text-sm text-gray-500">Manage individual schedules, assign services and let clients choose their preferred staff member at booking.</p>
+      </div>
+
+      <div class="fc-card fu d4">
         <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
           <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         </div>
         <h3 class="font-semibold mb-2">Revenue Tracking</h3>
-        <p class="text-sm text-gray-500">See daily, weekly, and monthly revenue at a glance. Know your numbers.</p>
+        <p class="text-sm text-gray-500">Track daily, weekly and monthly revenue at a glance. Understand your business performance without spreadsheets.</p>
+      </div>
+
+      <div class="fc-card fu d5">
+        <div class="w-10 h-10 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="font-semibold mb-2">Mobile Friendly</h3>
+        <p class="text-sm text-gray-500">Clients book from their phone in seconds. Your booking page looks perfect on every device with no app required.</p>
+      </div>
+
+      <div class="fc-card fu d6">
+        <div class="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center mb-4">
+          <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="font-semibold mb-2">Opening Hours</h3>
+        <p class="text-sm text-gray-500">Set your schedule once. Book-In only shows available slots during your business hours — no double bookings, ever.</p>
       </div>
     </div>
   </section>
 
-  <!-- Social proof -->
-  <section class="bg-gray-900 py-20 px-6">
-    <div class="max-w-4xl mx-auto text-center">
-      <p class="text-white text-2xl font-semibold leading-relaxed mb-4">
-        "Finally a booking system that doesn't get in the way. Set it up in 10 minutes, works perfectly."
-      </p>
-      <p class="text-gray-400 text-sm">— Ben, Barber & Studio Owner</p>
+  <!-- ── No commission ──────────────────────────────────────────────────── -->
+  <section class="bg-gray-900 py-24 px-6 relative overflow-hidden">
+    <!-- Subtle glow -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(37,99,235,.12) 0%, transparent 70%);"></div>
+
+    <div class="max-w-5xl mx-auto relative">
+      <div class="text-center mb-16 fu">
+        <span class="inline-block bg-green-500/20 text-green-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 border border-green-500/20">No hidden fees</span>
+        <h2 class="text-4xl font-bold text-white mb-4">Keep 100% of your booking revenue.</h2>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto">Other booking apps take a cut of every appointment. Book-In charges a simple monthly fee — and that's it.</p>
+      </div>
+
+      <!-- Comparison -->
+      <div class="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto">
+        <div class="fu d1 rounded-2xl border border-white/8 p-7" style="background:rgba(255,255,255,.04);">
+          <p class="text-gray-400 text-sm font-semibold mb-5 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+            Traditional booking apps
+          </p>
+          <ul class="cmp-bad space-y-3 text-sm list-none">
+            <li>Takes commission per appointment</li>
+            <li>Premium features cost extra</li>
+            <li>Complex per-seat pricing</li>
+            <li>Lock-in contracts</li>
+            <li>Client data owned by them</li>
+          </ul>
+        </div>
+        <div class="fu d2 rounded-2xl border border-white/15 p-7 relative" style="background:rgba(255,255,255,.07);">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">Book-In</div>
+          <p class="text-gray-300 text-sm font-semibold mb-5 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-400"></span>
+            Book-In
+          </p>
+          <ul class="cmp-good space-y-3 text-sm list-none">
+            <li>Zero commission, ever</li>
+            <li>Everything included in one price</li>
+            <li>Simple flat monthly fee</li>
+            <li>Cancel any time, no contracts</li>
+            <li>Your data, your clients</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-center mt-12 fu">
+        <a href="/signup" class="btn-p !bg-white !text-gray-900 hover:!bg-gray-100">Start your free trial →</a>
+      </div>
     </div>
   </section>
 
-  <!-- Who it's for -->
-  <section class="max-w-4xl mx-auto px-6 py-24 text-center">
-    <h2 class="text-3xl font-bold mb-4">Built for service businesses</h2>
-    <p class="text-gray-500 mb-12">If clients book time with you, Book-In works for you.</p>
-    <div class="flex flex-wrap justify-center gap-3">
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Barbers</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Hair Salons</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Tattoo Artists</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Nail Technicians</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Clinics</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Personal Trainers</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Freelancers</span>
-      <span class="bg-gray-100 px-4 py-2 rounded-full text-sm font-medium">Consultants</span>
+  <!-- ── Social proof ───────────────────────────────────────────────────── -->
+  <section class="max-w-5xl mx-auto px-6 py-24">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-20">
+      <div class="text-center fu d1">
+        <p class="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-1">5 min</p>
+        <p class="text-xs sm:text-sm text-gray-400">average setup time</p>
+      </div>
+      <div class="text-center fu d2">
+        <p class="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-1">60%+</p>
+        <p class="text-xs sm:text-sm text-gray-400">fewer no-shows</p>
+      </div>
+      <div class="text-center fu d3">
+        <p class="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 tracking-tight mb-1">24/7</p>
+        <p class="text-xs sm:text-sm text-gray-400">bookings while you sleep</p>
+      </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="text-center mb-12 fu">
+      <h2 class="text-3xl font-bold mb-3">What businesses say</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="tm-card fu d1">
+        <p class="stars text-sm mb-3">★★★★★</p>
+        <p class="text-sm text-gray-600 leading-relaxed mb-5">"Set it up in 15 minutes and my clients loved it straight away. The WhatsApp reminders alone have cut my no-shows in half."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 font-bold text-sm flex-shrink-0">J</div>
+          <div>
+            <p class="text-sm font-semibold">Jade M.</p>
+            <p class="text-xs text-gray-400">Hair salon, Manchester</p>
+          </div>
+        </div>
+      </div>
+      <div class="tm-card fu d2">
+        <p class="stars text-sm mb-3">★★★★★</p>
+        <p class="text-sm text-gray-600 leading-relaxed mb-5">"Finally a booking system that doesn't charge me every time someone books. Simple, clean, and my clients actually use it."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm flex-shrink-0">B</div>
+          <div>
+            <p class="text-sm font-semibold">Ben O.</p>
+            <p class="text-xs text-gray-400">Barber shop, London</p>
+          </div>
+        </div>
+      </div>
+      <div class="tm-card fu d3">
+        <p class="stars text-sm mb-3">★★★★★</p>
+        <p class="text-sm text-gray-600 leading-relaxed mb-5">"The staff scheduling feature is exactly what I needed. Each artist has their own schedule and clients can pick who they want."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm flex-shrink-0">K</div>
+          <div>
+            <p class="text-sm font-semibold">Kayla R.</p>
+            <p class="text-xs text-gray-400">Tattoo studio, Birmingham</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="border-t border-gray-100 py-24 px-6 text-center">
-    <h2 class="text-4xl font-bold mb-4">Ready to get started?</h2>
-    <p class="text-gray-500 mb-8">7-day free trial. No credit card required. Cancel anytime.</p>
-    <a href="/signup" class="inline-block bg-gray-900 text-white px-10 py-4 rounded-xl text-base font-semibold hover:bg-gray-700 transition">
-      Start Free Trial — £9.99/mo
-    </a>
+  <!-- ── Pricing teaser ─────────────────────────────────────────────────── -->
+  <section class="border-t border-gray-100 bg-gray-50/70 py-20 px-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center fu mb-12">
+        <span class="inline-block bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-blue-100">Transparent pricing</span>
+        <h2 class="text-3xl font-bold mb-3">Simple, honest pricing</h2>
+        <p class="text-gray-500 max-w-md mx-auto">No contracts, no commission. Pay a flat monthly fee and keep every penny you earn.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-5 max-w-2xl mx-auto">
+
+        <!-- Pro -->
+        <div class="fu d1 bg-white rounded-2xl border border-gray-200 p-8 flex flex-col">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Pro</p>
+          <div class="flex items-end gap-1 mb-1">
+            <span class="text-5xl font-black tracking-tight text-gray-900">£14.99</span>
+            <span class="text-gray-400 text-base mb-1.5">/month</span>
+          </div>
+          <p class="text-sm text-gray-400 mb-6">+ pay-as-you-go SMS &amp; WhatsApp</p>
+          <ul class="space-y-2.5 mb-8 flex-1">
+            <li class="flex items-center gap-2 text-sm text-gray-600"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Unlimited bookings</li>
+            <li class="flex items-center gap-2 text-sm text-gray-600"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Email confirmations &amp; reminders</li>
+            <li class="flex items-center gap-2 text-sm text-gray-600"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Staff management</li>
+            <li class="flex items-center gap-2 text-sm text-gray-600"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Online booking page</li>
+          </ul>
+          <a href="/signup" class="btn-s text-center !w-full !text-sm">Start free trial →</a>
+        </div>
+
+        <!-- Ultra -->
+        <div class="fu d2 bg-gray-900 rounded-2xl border border-gray-800 p-8 flex flex-col relative overflow-hidden">
+          <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">Most popular</div>
+          <p class="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3">Ultra</p>
+          <div class="flex items-end gap-1 mb-1">
+            <span class="text-5xl font-black tracking-tight text-white">£39.99</span>
+            <span class="text-gray-400 text-base mb-1.5">/month</span>
+          </div>
+          <p class="text-sm text-gray-500 mb-6">Everything in Pro, plus:</p>
+          <ul class="space-y-2.5 mb-8 flex-1">
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>SMS &amp; WhatsApp reminders</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Missed call recovery</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Automated review requests</li>
+            <li class="flex items-center gap-2 text-sm text-gray-300"><svg class="w-4 h-4 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>AI receptionist (missed calls)</li>
+          </ul>
+          <a href="/signup" class="btn-p text-center !w-full !text-sm !bg-white !text-gray-900 hover:!bg-gray-100">Start free trial →</a>
+        </div>
+
+      </div>
+      <p class="text-center text-sm text-gray-400 mt-6 fu">14-day free trial on both plans · No credit card required · Cancel anytime</p>
+      <div class="text-center mt-4 fu">
+        <a href="/pricing" class="text-sm text-blue-600 hover:text-blue-700 font-medium">See full pricing details →</a>
+      </div>
+    </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ── Final CTA ──────────────────────────────────────────────────────── -->
+  <section class="max-w-4xl mx-auto px-6 py-28 text-center">
+    <div class="fu">
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-5 leading-tight">
+        Start taking bookings<br class="hidden sm:block"> in minutes.
+      </h2>
+      <p class="text-lg text-gray-500 mb-10 max-w-md mx-auto">No contracts. No commission. Just simple booking software your clients will actually use.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+        <a href="/signup" class="btn-p text-base !py-4 !px-10">Start Free Trial</a>
+      </div>
+      <p class="text-sm text-gray-400">Setup takes less than 5 minutes · 14-day free trial · No credit card required</p>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
   <footer class="border-t border-gray-100 py-8 px-6">
-    <div class="max-w-6xl mx-auto flex items-center justify-between text-sm text-gray-400">
-      <span class="font-semibold text-gray-900">Book-In</span>
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+      <span class="font-bold text-gray-900 text-base">Book-In</span>
       <div class="flex gap-6">
-        <a href="/pricing" class="hover:text-gray-900">Pricing</a>
-        <a href="/login" class="hover:text-gray-900">Login</a>
+        <a href="/pricing" class="hover:text-gray-900 transition">Pricing</a>
+        <a href="/login" class="hover:text-gray-900 transition">Login</a>
+        <a href="/signup" class="hover:text-gray-900 transition">Sign up</a>
       </div>
+      <span class="text-xs">© 2025 Book-In. All rights reserved.</span>
     </div>
   </footer>
 
+  <script>
+    // Sticky navbar
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 16);
+    }, { passive: true });
+
+    // Scroll reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fu').forEach(el => io.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const el = document.querySelector(a.getAttribute('href'));
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+  </script>
 </body>
 </html>
